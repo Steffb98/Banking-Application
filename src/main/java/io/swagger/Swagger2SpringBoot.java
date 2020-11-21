@@ -9,6 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+//hoi mensen!
+
 @SpringBootApplication
 @EnableSwagger2
 @ComponentScan(basePackages = { "io.swagger", "io.swagger.api" , "io.swagger.configuration"})
