@@ -54,35 +54,24 @@ public class AccountApiController implements AccountApi {
     }
 
     public ResponseEntity<List<Account>> getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Id of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<Account>>(objectMapper.readValue("[ {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n}, {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<Account>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            return new ResponseEntity<List<Account>>(objectMapper.readValue("[ {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n}, {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
+        } catch (IOException e) {
+            log.error("Couldn't serialize response for content type application/json", e);
+            return new ResponseEntity<List<Account>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<List<Account>>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     public ResponseEntity<List<Account>> getAccountByUserID(@Parameter(in = ParameterIn.PATH, description = "Id of user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<Account>>(objectMapper.readValue("[ {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n}, {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<Account>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            return new ResponseEntity<List<Account>>(objectMapper.readValue("[ {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n}, {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
+        } catch (IOException e) {
+            log.error("Couldn't serialize response for content type application/json", e);
+            return new ResponseEntity<List<Account>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<List<Account>>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     public ResponseEntity<Void> toggleStatusAcc(@Parameter(in = ParameterIn.PATH, description = "AccountID to set to active or inactive", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
-        String accept = request.getHeader("Accept");
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
