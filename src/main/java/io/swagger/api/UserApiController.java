@@ -49,46 +49,33 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
-        String accept = request.getHeader("Accept");
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     public ResponseEntity<User> getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<User>(objectMapper.readValue("{\n  \"firstname\" : \"John\",\n  \"password\" : \"Password\",\n  \"isactive\" : true,\n  \"typeofuser\" : \"customer\",\n  \"id\" : 1,\n  \"email\" : \"John.Doe@example.com\",\n  \"lastname\" : \"Doe\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            return new ResponseEntity<User>(objectMapper.readValue("{\n  \"firstname\" : \"John\",\n  \"password\" : \"Password\",\n  \"isactive\" : true,\n  \"typeofuser\" : \"customer\",\n  \"id\" : 1,\n  \"email\" : \"John.Doe@example.com\",\n  \"lastname\" : \"Doe\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
+        } catch (IOException e) {
+            log.error("Couldn't serialize response for content type application/json", e);
+            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<User>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     public ResponseEntity<Void> toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        String accept = request.getHeader("Accept");
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId,@Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body) {
-        String accept = request.getHeader("Accept");
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     public ResponseEntity<User> userid(@Parameter(in = ParameterIn.PATH, description = "ID of specific user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<User>(objectMapper.readValue("{\n  \"firstname\" : \"John\",\n  \"password\" : \"Password\",\n  \"isactive\" : true,\n  \"typeofuser\" : \"customer\",\n  \"id\" : 1,\n  \"email\" : \"John.Doe@example.com\",\n  \"lastname\" : \"Doe\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        try {
+            return new ResponseEntity<User>(objectMapper.readValue("{\n  \"firstname\" : \"John\",\n  \"password\" : \"Password\",\n  \"isactive\" : true,\n  \"typeofuser\" : \"customer\",\n  \"id\" : 1,\n  \"email\" : \"John.Doe@example.com\",\n  \"lastname\" : \"Doe\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
+        } catch (IOException e) {
+            log.error("Couldn't serialize response for content type application/json", e);
+            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<User>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }
