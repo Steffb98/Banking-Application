@@ -85,20 +85,5 @@ public interface UserApi {
         method = RequestMethod.PUT)
     ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId, @Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body);
 
-
-    @Operation(summary = "get a user with specific id", description = "find a user with a specific id", tags={ "user" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = User.class))),
-        
-        @ApiResponse(responseCode = "400", description = "Invalid userId supplied"),
-        
-        @ApiResponse(responseCode = "401", description = "failed to authenticate"),
-        
-        @ApiResponse(responseCode = "404", description = "userId not found") })
-    @RequestMapping(value = "/user/{userId}",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<User> userid(@Parameter(in = ParameterIn.PATH, description = "ID of specific user", required=true, schema=@Schema()) @PathVariable("userId") Long userId);
-
 }
 

@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.service.UserService;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -42,22 +44,29 @@ public class UserApiController implements UserApi {
 
     private final HttpServletRequest request;
 
+    private UserService userService;
+
     @org.springframework.beans.factory.annotation.Autowired
-    public UserApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public UserApiController(ObjectMapper objectMapper, HttpServletRequest request, UserService userService) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.userService = userService;
     }
 
     public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            HttpStatus status = userService.createUser(body);
+            return new ResponseEntity<Void>(status);
+        }catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<User> getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-            return new ResponseEntity<User>(objectMapper.readValue("{\n  \"firstname\" : \"John\",\n  \"password\" : \"Password\",\n  \"isactive\" : true,\n  \"typeofuser\" : \"customer\",\n  \"id\" : 1,\n  \"email\" : \"John.Doe@example.com\",\n  \"lastname\" : \"Doe\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
+             return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
+        } catch (Exception e) {
+             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -69,13 +78,5 @@ public class UserApiController implements UserApi {
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<User> userid(@Parameter(in = ParameterIn.PATH, description = "ID of specific user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        try {
-            return new ResponseEntity<User>(objectMapper.readValue("{\n  \"firstname\" : \"John\",\n  \"password\" : \"Password\",\n  \"isactive\" : true,\n  \"typeofuser\" : \"customer\",\n  \"id\" : 1,\n  \"email\" : \"John.Doe@example.com\",\n  \"lastname\" : \"Doe\"\n}", User.class), HttpStatus.NOT_IMPLEMENTED);
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
 }
