@@ -71,7 +71,12 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<Void> toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            HttpStatus status = userService.toggleUserStatus(userId);
+            return new ResponseEntity<Void>(status);
+        }catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId,@Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body) {

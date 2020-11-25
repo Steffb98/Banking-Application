@@ -27,4 +27,15 @@ public class UserService {
             return HttpStatus.FOUND;
         }
     }
+
+    public HttpStatus toggleUserStatus(Long userId) {
+        User user = userRepository.findUserById(userId);
+        if(user != null){
+            user.setIsactive(!user.isIsactive());
+            userRepository.save(user);
+            return HttpStatus.OK;
+        }else{
+            return HttpStatus.NOT_FOUND;
+        }
+    }
 }
