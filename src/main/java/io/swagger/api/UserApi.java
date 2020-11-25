@@ -39,7 +39,7 @@ public interface UserApi {
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "201", description = "User created"),
         
-        @ApiResponse(responseCode = "400", description = "bad input") })
+        @ApiResponse(responseCode = "400", description = "bad input")})
     @RequestMapping(value = "/user",
         consumes = { "application/json" }, 
         method = RequestMethod.POST)

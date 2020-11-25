@@ -23,9 +23,8 @@ public class UserService {
         if(userRepository.findByEmail(user.getEmail()) == null){
             userRepository.save(user);
             return HttpStatus.OK;
-        }
-        else{
-            return HttpStatus.NOT_FOUND;
+        }else{
+            return HttpStatus.FOUND;
         }
     }
 }

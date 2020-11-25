@@ -64,9 +64,9 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity<User> getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-             return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
+            return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
         } catch (Exception e) {
-             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
