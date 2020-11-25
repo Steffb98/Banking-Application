@@ -64,7 +64,14 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity<User> getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-            return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
+            User user = userService.getUserById(userId);
+            if(user != null)
+            {
+                return new ResponseEntity<User>(user, HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -80,7 +87,12 @@ public class UserApiController implements UserApi {
     }
 
     public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId,@Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body) {
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        try {
+            HttpStatus status = userService.updateUser(userId, body);
+            return new ResponseEntity<Void>(status);
+        }catch (Exception e) {
+            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

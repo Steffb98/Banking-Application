@@ -38,4 +38,26 @@ public class UserService {
             return HttpStatus.NOT_FOUND;
         }
     }
+
+    public HttpStatus updateUser(Long userId, User body) {
+        User user = userRepository.findUserById(userId);
+        if(user != null){
+            if (!body.getFirstname().isEmpty()) {
+                user.setFirstname(body.getFirstname());
+            }
+            if (!body.getLastname().isEmpty()) {
+                user.setLastname(body.getLastname());
+            }
+            if (!body.getEmail().isEmpty()) {
+                user.setEmail(body.getEmail());
+            }
+            if (!body.getPassword().isEmpty()) {
+                user.setPassword(body.getPassword());
+            }
+            userRepository.save(user);
+            return HttpStatus.OK;
+        }else{
+            return HttpStatus.NOT_FOUND;
+        }
+    }
 }
