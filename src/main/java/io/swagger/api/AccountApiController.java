@@ -1,5 +1,7 @@
 package io.swagger.api;
 
+import io.swagger.exception.BadInputException;
+import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.service.AccountService;
@@ -50,16 +52,28 @@ public class AccountApiController implements AccountApi {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
+        } catch(BadInputException e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        } catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    public ResponseEntity<List<Account>> getAccountByUserID(@Parameter(in = ParameterIn.PATH, description = "Id of user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
+    public ResponseEntity getAccountByUserID(@Parameter(in = ParameterIn.PATH, description = "Id of user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-            return new ResponseEntity<List<Account>>(objectMapper.readValue("[ {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n}, {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<List<Account>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<List<Account>>(accountService.getAccountsByUserId(userId), HttpStatus.NOT_IMPLEMENTED);
+        } catch(NotFoundException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        } catch(BadInputException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        } catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
