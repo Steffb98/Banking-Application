@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.api.NotFoundException;
 import io.swagger.model.Account;
 import io.swagger.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,11 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account getAccountByIban(String iban){
-        return accountRepository.findAccountByIban(iban);
+    public Account getAccountByIban(String iban) throws NotFoundException {
+        Account account = accountRepository.findAccountByIban(iban);
+        if (account == null){
+            throw new NotFoundException(404, "No account found with this iban");
+        }
+        return account;
     }
 }
