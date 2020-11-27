@@ -58,7 +58,7 @@ public interface AccountApi {
     @RequestMapping(value = "/account/{accountId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Id of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId);
+    ResponseEntity<Account> getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Id of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId);
 
 
     @Operation(summary = "get all accounts", description = "Calling this method will get you a list of all the accounts from a user", tags={ "accounts" })

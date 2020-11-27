@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.model.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -42,10 +43,13 @@ public class AccountApiController implements AccountApi {
 
     private final HttpServletRequest request;
 
+    private final AccountService accountService;
+
     @org.springframework.beans.factory.annotation.Autowired
-    public AccountApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public AccountApiController(ObjectMapper objectMapper, HttpServletRequest request, AccountService accountService) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.accountService = accountService;
     }
 
     public ResponseEntity<Void> createAcc(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Account body) {
@@ -53,12 +57,12 @@ public class AccountApiController implements AccountApi {
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<List<Account>> getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Id of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
+    public ResponseEntity<Account> getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Iban of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
         try {
-            return new ResponseEntity<List<Account>>(objectMapper.readValue("[ {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n}, {\n  \"daylimit\" : 5,\n  \"numberoftransactions\" : 0,\n  \"balance\" : 10.00,\n  \"transactionlimit\" : 20000.00,\n  \"iban\" : \"NL00RABO0123456789\",\n  \"isactive\" : true,\n  \"typeofaccount\" : \"saving\",\n  \"userid\" : 0,\n  \"absolutlimit\" : -10.00\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-        } catch (IOException e) {
+            return new ResponseEntity<Account>(accountService.getAccountByIban(accountId), HttpStatus.NOT_IMPLEMENTED);
+        } catch (Exception e) {
             log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<List<Account>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Account>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

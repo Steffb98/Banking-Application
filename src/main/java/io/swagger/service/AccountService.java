@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountService {
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
     public AccountService(AccountRepository accountRepository){
         this.accountRepository = accountRepository;
+    }
+
+    public Account getAccountByIban(String iban){
+        return accountRepository.findAccountByIban(iban);
     }
 }
