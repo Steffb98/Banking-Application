@@ -40,8 +40,8 @@ public class MyApplicationRunner implements ApplicationRunner {
         userRepository.findAll().forEach(System.out::println);
 
         List<Account> accounts = Arrays.asList(
-                new Account("NL88INHO0123456789", BigDecimal.valueOf(-5.00), Account.TypeofaccountEnum.SAVING, BigDecimal.valueOf(-10.00), true, 100001L, 5L, new BigDecimal(20000), 5L),
-                new Account("NL89INHO0123456789", BigDecimal.valueOf(-5.00), Account.TypeofaccountEnum.DEPOSIT, BigDecimal.valueOf(-10.00), true, 100001L, 5L, new BigDecimal(20000), 5L)
+                new Account("NL88INHO0123456789", BigDecimal.valueOf(0.00), Account.TypeofaccountEnum.SAVING, BigDecimal.valueOf(-10.00), true, 100001L, 5L, new BigDecimal(20000), 5L),
+                new Account("NL89INHO0123456789", BigDecimal.valueOf(0.00), Account.TypeofaccountEnum.DEPOSIT, BigDecimal.valueOf(-10.00), true, 100001L, 5L, new BigDecimal(20000), 5L)
         );
 
         accounts.forEach(accountRepository::save);
