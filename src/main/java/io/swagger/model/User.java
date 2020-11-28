@@ -7,8 +7,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -21,8 +20,10 @@ import javax.validation.constraints.*;
 @Entity
 public class User   {
   @Id
-  @JsonProperty("id")
-  private Integer id = null;
+  @JsonProperty("userId")
+  @SequenceGenerator(name = "user_seq", initialValue = 100001)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+  private Long userId = null;
 
   @JsonProperty("firstname")
   private String firstname = null;
@@ -39,7 +40,18 @@ public class User   {
   @JsonProperty("isactive")
   private Boolean isactive = null;
 
-  /**
+  public User(String firstname, String lastname, String email, String password, Boolean isactive, TypeofuserEnum typeofuser) {
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.email = email;
+    this.password = password;
+    this.isactive = isactive;
+    this.typeofuser = typeofuser;
+  }
+  public User() {
+  }
+
+    /**
    * Gets or Sets typeofuser
    */
   public enum TypeofuserEnum {
@@ -72,24 +84,24 @@ public class User   {
   @JsonProperty("typeofuser")
   private TypeofuserEnum typeofuser = null;
 
-  public User id(Integer id) {
-    this.id = id;
+  public User userId(Long userId) {
+    this.userId = userId;
     return this;
   }
 
   /**
-   * Get id
-   * @return id
+   * Get userId
+   * @return userId
    **/
-  @Schema(example = "1", required = true, description = "")
+  @Schema(example = "100001", required = true, description = "")
       @NotNull
 
-    public Integer getId() {
-    return id;
+    public Long getuserId() {
+    return userId;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
+  public void setuserId(Long userId) {
+    this.userId = userId;
   }
 
   public User firstname(String firstname) {
@@ -220,7 +232,7 @@ public class User   {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(this.id, user.id) &&
+    return Objects.equals(this.userId, user.userId) &&
         Objects.equals(this.firstname, user.firstname) &&
         Objects.equals(this.lastname, user.lastname) &&
         Objects.equals(this.email, user.email) &&
@@ -231,7 +243,7 @@ public class User   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, firstname, lastname, email, password, isactive, typeofuser);
+    return Objects.hash(userId, firstname, lastname, email, password, isactive, typeofuser);
   }
 
   @Override
@@ -239,7 +251,7 @@ public class User   {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
     
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    firstname: ").append(toIndentedString(firstname)).append("\n");
     sb.append("    lastname: ").append(toIndentedString(lastname)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
