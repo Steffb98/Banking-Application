@@ -5,6 +5,7 @@
  */
 package io.swagger.api;
 
+import io.swagger.exception.BadInputException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +37,7 @@ public interface AccountApi {
     @RequestMapping(value = "/account",
         consumes = { "application/json", "application/xml" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> createAcc(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Account body);
+    ResponseEntity<Void> createAcc(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Account body, Errors errors) throws BadInputException, NotFoundException;
 
 
     @Operation(summary = "Get a specific account", description = "Calling this method will get you a specific bank account", tags={ "accounts" })
