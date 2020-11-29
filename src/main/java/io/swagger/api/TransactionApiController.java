@@ -2,6 +2,8 @@ package io.swagger.api;
 
 import io.swagger.model.Transaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.service.AccountService;
+import io.swagger.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -42,40 +44,64 @@ public class TransactionApiController implements TransactionApi {
 
     private final HttpServletRequest request;
 
+    private TransactionService transactionService;
+
+    private AccountService accountService;
+
     @org.springframework.beans.factory.annotation.Autowired
-    public TransactionApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public TransactionApiController(ObjectMapper objectMapper, HttpServletRequest request, TransactionService transactionService, AccountService accountService) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.transactionService = transactionService;
+        this.accountService = accountService;
     }
 
-    public ResponseEntity<Void> addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) {
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    public ResponseEntity<List<Transaction>> getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId) {
+    public ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) {
         try {
-            return new ResponseEntity<List<Transaction>>(objectMapper.readValue("[ {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"amount\" : 6.027456183070403,\n  \"receiver\" : \"receiver\",\n  \"sender\" : \"sender\",\n  \"performinguser\" : 1,\n  \"id\" : 0\n}, {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"amount\" : 6.027456183070403,\n  \"receiver\" : \"receiver\",\n  \"sender\" : \"sender\",\n  \"performinguser\" : 1,\n  \"id\" : 0\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<List<Transaction>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            if (accountService.checkDayLimit(accountService.getAccountByIban(body.getSender()))) {
+                throw new IllegalArgumentException("You have reached your daily limt");
+            }
+            else if (accountService.checkBalance(accountService.getAccountByIban(body.getSender()), body.getAmount())){
+                throw new IllegalArgumentException("You have not enough money on your account");
+            }
+            else {
+                accountService.updateBalance(accountService.getAccountByIban(body.getSender()), body.getAmount(), "subtract");
+                accountService.updateBalance(accountService.getAccountByIban(body.getReceiver()), body.getAmount(), "add");
+                transactionService.addTransaction(body);
+                return ResponseEntity.status(HttpStatus.OK).body("Transaction Created");
+            }
+
+
+        } catch (IllegalArgumentException iae){
+            log.error("Invalid input", iae);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        }
+    }
+
+    public ResponseEntity<Transaction> getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(transactionService.getTransactionById(transactionId).get());
+        } catch (IllegalArgumentException iae) {
+            log.error("Invalid transactionId", iae);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     public ResponseEntity<List<Transaction>> getTransactionFromAccount(@Parameter(in = ParameterIn.PATH, description = "ID of an account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
         try {
-            return new ResponseEntity<List<Transaction>>(objectMapper.readValue("[ {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"amount\" : 6.027456183070403,\n  \"receiver\" : \"receiver\",\n  \"sender\" : \"sender\",\n  \"performinguser\" : 1,\n  \"id\" : 0\n}, {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"amount\" : 6.027456183070403,\n  \"receiver\" : \"receiver\",\n  \"sender\" : \"sender\",\n  \"performinguser\" : 1,\n  \"id\" : 0\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<List<Transaction>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.OK).body(transactionService.getAllTransactionsFromAccount(accountId));
+        } catch (IllegalArgumentException iae) {
+            log.error("Invalid accountId", iae);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     public ResponseEntity<List<Transaction>> getTransactionFromUser(@Parameter(in = ParameterIn.PATH, description = "ID of a user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-            return new ResponseEntity<List<Transaction>>(objectMapper.readValue("[ {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"amount\" : 6.027456183070403,\n  \"receiver\" : \"receiver\",\n  \"sender\" : \"sender\",\n  \"performinguser\" : 1,\n  \"id\" : 0\n}, {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"amount\" : 6.027456183070403,\n  \"receiver\" : \"receiver\",\n  \"sender\" : \"sender\",\n  \"performinguser\" : 1,\n  \"id\" : 0\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-        } catch (IOException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<List<Transaction>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.OK).body(transactionService.getAllTransactionsFromUser(userId));
+        } catch (IllegalArgumentException iae) {
+            log.error("Invalid userId", iae);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

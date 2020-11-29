@@ -56,7 +56,7 @@ public interface TransactionApi {
     @RequestMapping(value = "/transaction/{transactionId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Transaction>> getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId);
+    ResponseEntity<Transaction> getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId);
 
 
     @Operation(summary = "Get transactions from an account", description = "Returns transactions from a specific account", tags={ "transactions" })
