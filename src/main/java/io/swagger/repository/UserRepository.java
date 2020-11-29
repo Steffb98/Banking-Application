@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Query("SELECT u FROM User u WHERE u.userId = ?1 ")
-    User findUserById(Long userId);
 
     User findByEmail(String email);
+
+    User findUserByUserId(Long userId);
 }
