@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+import java.util.Random;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,18 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account   {
+
+  public Account(String iban, TypeofaccountEnum typeofaccount, Long userid) {
+    this.iban = iban;
+    this.balance = BigDecimal.valueOf(0.00);
+    this.typeofaccount = typeofaccount;
+    this.absolutlimit = BigDecimal.valueOf(-10.00);
+    this.isactive = true;
+    this.userid = userid;
+    this.daylimit = 5l;
+    this.transactionlimit = BigDecimal.valueOf(20000);
+    this.numberoftransactions = 0l;
+  }
 
   @Id
   @JsonProperty("iban")
@@ -95,7 +108,7 @@ public class Account   {
    * @return iban
    **/
   @Schema(example = "NL00RABO0123456789", required = true, description = "")
-      @NotNull
+      //@NotNull
 
     public String getIban() {
     return iban;
@@ -115,7 +128,7 @@ public class Account   {
    * @return balance
    **/
   @Schema(example = "10.00", required = true, description = "")
-      @NotNull
+      //@NotNull
 
     @Valid
     public BigDecimal getBalance() {
@@ -136,7 +149,7 @@ public class Account   {
    * @return typeofaccount
    **/
   @Schema(required = true, description = "")
-      @NotNull
+    @NotNull
 
     public TypeofaccountEnum getTypeofaccount() {
     return typeofaccount;
