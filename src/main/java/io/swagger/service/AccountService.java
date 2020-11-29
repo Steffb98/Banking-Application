@@ -46,11 +46,7 @@ public class AccountService {
         return accounts;
     }
 
-    public void createAccount(Account acc) throws BadInputException, NotFoundException {
-        if (!acc.getTypeofaccount().getClass().isEnum()){
-            throw new BadInputException(400, "Bad input for type of account");
-        }
-
+    public void createAccount(Account acc) throws NotFoundException {
         if (userRepository.findUserById(acc.getUserid()) == null){
             throw new NotFoundException(404, "User not found");
         }
