@@ -72,7 +72,7 @@ public class AccountService {
     }
 
     public void createAccount(Account acc) throws NotFoundException {
-        if (userRepository.findUserById(acc.getUserid()) == null){
+        if (userRepository.findUserByUserId(acc.getUserid()) == null){
             throw new NotFoundException(404, "User not found");
         }
 

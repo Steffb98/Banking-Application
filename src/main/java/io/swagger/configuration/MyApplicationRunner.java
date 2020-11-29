@@ -34,8 +34,8 @@ public class MyApplicationRunner implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
         List<User> users = Arrays.asList(
-                new User("Kim", "Gelder", "663143@student.inholland.nl", "wachtwoord", true, User.TypeofuserEnum.EMPLOYEE),
-                new User("Cheyen", "Alberts", "568524@student.inholland.nl", "wachtwoord123", true, User.TypeofuserEnum.EMPLOYEE)
+                new User("Kim", "Gelder", "663143@student.inholland.nl", "wachtwoord"),
+                new User("Cheyen", "Alberts", "568524@student.inholland.nl", "wachtwoord123")
         );
 
         users.forEach(userRepository::save);
