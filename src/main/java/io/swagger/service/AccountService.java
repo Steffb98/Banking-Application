@@ -28,10 +28,13 @@ public class AccountService {
         if (iban.length() != IBAN_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of iban is incorrect");
         }
+
         Account account = accountRepository.findAccountByIban(iban);
-        if (account == null){
+
+        if (account == null) {
             throw new NotFoundException(404, "No account found with this iban");
         }
+
         return account;
     }
 
@@ -39,11 +42,32 @@ public class AccountService {
         if (userId.toString().length() != USERID_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of userid is incorrect");
         }
+
         List<Account> accounts = accountRepository.findAccountsByUserid(userId);
-        if (accounts.isEmpty()){
+
+        if (accounts.isEmpty()) {
             throw new NotFoundException(404, "No accounts found with this userid");
         }
+
         return accounts;
+    }
+
+    public void toggleActivityStatus(String iban) throws NotFoundException, BadInputException {
+        if (iban.length() != IBAN_FORMAT_CHARACTERS) {
+            throw new BadInputException(400, "Format of iban is incorrect");
+        }
+
+        //retrieving account from database to use the built-in security from h2o
+        Account account = accountRepository.findAccountByIban(iban);
+
+        if (account == null) {
+            throw new NotFoundException(404, "No account found with this iban");
+        }
+
+        //setting isActive to the opposite of the current value
+        account.setIsactive(!account.getIsactive());
+
+        accountRepository.save(account);
     }
 
     public void createAccount(Account acc) throws NotFoundException {

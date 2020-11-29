@@ -190,7 +190,7 @@ public class Account   {
    **/
   @Schema(example = "true", description = "")
   
-    public Boolean isIsactive() {
+    public Boolean getIsactive() {
     return isactive;
   }
 
