@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -18,6 +20,8 @@ import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-11-21T13:18:37.550Z[GMT]")
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class User   {
   @Id
   @JsonProperty("userId")
@@ -40,18 +44,16 @@ public class User   {
   @JsonProperty("isactive")
   private Boolean isactive = null;
 
-  public User(String firstname, String lastname, String email, String password, Boolean isactive, TypeofuserEnum typeofuser) {
+  public User(String firstname, String lastname, String email, String password) {
     this.firstname = firstname;
     this.lastname = lastname;
     this.email = email;
     this.password = password;
-    this.isactive = isactive;
-    this.typeofuser = typeofuser;
-  }
-  public User() {
+    this.isactive = true;
+    this.typeofuser = TypeofuserEnum.CUSTOMER;
   }
 
-    /**
+  /**
    * Gets or Sets typeofuser
    */
   public enum TypeofuserEnum {
@@ -94,9 +96,8 @@ public class User   {
    * @return userId
    **/
   @Schema(example = "100001", required = true, description = "")
-      @NotNull
 
-    public Long getuserId() {
+      public Long getuserId() {
     return userId;
   }
 

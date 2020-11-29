@@ -1,5 +1,7 @@
 package io.swagger.api;
 
+import io.swagger.exception.AlreadyExistsException;
+import io.swagger.exception.NotFoundException;
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.service.UserService;
@@ -55,47 +57,58 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
         try {
-            HttpStatus status = userService.createUser(body);
-            return new ResponseEntity<Void>(status);
-        }catch (Exception e) {
+            userService.createUser(body);
             return ResponseEntity
-                    .status(HttpStatus.FOUND)
-                    .body("User already exists");
-        }
-    }
-
-    public ResponseEntity<User> getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        try {
-            User user = userService.getUserById(userId);
-            if(user != null)
-            {
-                return new ResponseEntity<User>(user, HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public ResponseEntity<Void> toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        try {
-            HttpStatus status = userService.toggleUserStatus(userId);
-            return new ResponseEntity<Void>(status);
+                    .status(HttpStatus.CREATED)
+                    .body("User has been created");
+        }catch(AlreadyExistsException e){
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
         }catch (Exception e) {
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId,@Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body) {
+    public ResponseEntity getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-            HttpStatus status = userService.updateUser(userId, body);
-            return new ResponseEntity<Void>(status);
+            return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
+        }catch(NotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
         }catch (Exception e) {
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    public ResponseEntity toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
+        try {
+            userService.toggleUserStatus(userId);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("User activity has been changed");
+        }catch(NotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    public ResponseEntity updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId,@Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body) {
+        try {
+            userService.updateUser(userId, body);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("User has been updated");
+        }catch(NotFoundException e){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
