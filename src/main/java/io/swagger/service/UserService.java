@@ -16,7 +16,7 @@ public class UserService {
 
     public User getUserById(Long userId)
     {
-        return userRepository.findUserById(userId);
+        return userRepository.findUserByUserId(userId);
     }
 
     public HttpStatus createUser(User user) {
@@ -29,8 +29,10 @@ public class UserService {
     }
 
     public HttpStatus toggleUserStatus(Long userId) {
-        User user = userRepository.findUserById(userId);
+        User user = userRepository.findUserByUserId(userId);
         if(user != null){
+
+            //setting isActive to the opposite of the current value
             user.setIsactive(!user.isIsactive());
             userRepository.save(user);
             return HttpStatus.OK;
@@ -40,7 +42,7 @@ public class UserService {
     }
 
     public HttpStatus updateUser(Long userId, User body) {
-        User user = userRepository.findUserById(userId);
+        User user = userRepository.findUserByUserId(userId);
         if(user != null){
             if (!body.getFirstname().isEmpty()) {
                 user.setFirstname(body.getFirstname());

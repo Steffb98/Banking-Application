@@ -53,12 +53,14 @@ public class UserApiController implements UserApi {
         this.userService = userService;
     }
 
-    public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
+    public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
         try {
             HttpStatus status = userService.createUser(body);
             return new ResponseEntity<Void>(status);
         }catch (Exception e) {
-            return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .body("User already exists");
         }
     }
 
