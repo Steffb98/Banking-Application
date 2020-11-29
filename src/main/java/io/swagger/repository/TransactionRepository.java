@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction, Long> {
 
-    Iterable<Transaction> getAllByBy_IdOrderByDate(Long userId);
+    Iterable<Transaction> getAllByPerforminguserOrderByDate(Long userId);
 
     @Query("select t from Transaction t where t.receiver = ?1 or t.sender = ?1")
     Iterable<Transaction> getTransactionsByAccount(String accountId);
+
+    Transaction findTransactionById(Long id);
 
 }

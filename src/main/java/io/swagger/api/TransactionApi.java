@@ -5,6 +5,7 @@
  */
 package io.swagger.api;
 
+import io.swagger.exception.NotFoundException;
 import io.swagger.model.Transaction;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,7 +44,7 @@ public interface TransactionApi {
     @RequestMapping(value = "/transaction",
         consumes = { "application/json", "application/xml" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body);
+    ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) throws NotFoundException;
 
 
     @Operation(summary = "Get a transactions by ID", description = "Returns a single transaction", tags={ "transactions" })
@@ -56,7 +57,7 @@ public interface TransactionApi {
     @RequestMapping(value = "/transaction/{transactionId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Transaction> getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId);
+    ResponseEntity getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId) throws NotFoundException;
 
 
     @Operation(summary = "Get transactions from an account", description = "Returns transactions from a specific account", tags={ "transactions" })

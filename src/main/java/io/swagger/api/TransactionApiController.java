@@ -1,5 +1,7 @@
 package io.swagger.api;
 
+import io.swagger.exception.BadInputException;
+import io.swagger.exception.NotFoundException;
 import io.swagger.model.Transaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.service.AccountService;
@@ -56,43 +58,46 @@ public class TransactionApiController implements TransactionApi {
         this.accountService = accountService;
     }
 
-    public ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) {
+    public ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) throws NotFoundException {
         try {
-            if (accountService.checkDayLimit(accountService.getAccountByIban(body.getSender()))) {
-                throw new IllegalArgumentException("You have reached your daily limt");
-            }
-            else if (accountService.checkBalance(accountService.getAccountByIban(body.getSender()), body.getAmount())){
-                throw new IllegalArgumentException("You have not enough money on your account");
-            }
-            else {
-                accountService.updateBalance(accountService.getAccountByIban(body.getSender()), body.getAmount(), "subtract");
-                accountService.updateBalance(accountService.getAccountByIban(body.getReceiver()), body.getAmount(), "add");
-                transactionService.addTransaction(body);
-                return ResponseEntity.status(HttpStatus.OK).body("Transaction Created");
-            }
+
+            transactionService.addTransaction(body);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Transaction Created");
 
 
         } catch (IllegalArgumentException iae){
             log.error("Invalid input", iae);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(iae.getMessage());
+        } catch (NotFoundException nfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
+        } catch (BadInputException bie){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bie.getMessage());
         }
     }
 
-    public ResponseEntity<Transaction> getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId) {
+    public ResponseEntity getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId) throws NotFoundException {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(transactionService.getTransactionById(transactionId).get());
+            return new ResponseEntity<Transaction>(transactionService.getTransactionById(transactionId), HttpStatus.OK);
+        } catch (NotFoundException nfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
         } catch (IllegalArgumentException iae) {
             log.error("Invalid transactionId", iae);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    public ResponseEntity<List<Transaction>> getTransactionFromAccount(@Parameter(in = ParameterIn.PATH, description = "ID of an account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
+    public ResponseEntity getTransactionFromAccount(@Parameter(in = ParameterIn.PATH, description = "ID of an account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(transactionService.getAllTransactionsFromAccount(accountId));
-        } catch (IllegalArgumentException iae) {
+        }
+
+        catch (IllegalArgumentException iae) {
             log.error("Invalid accountId", iae);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (NotFoundException nfe){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(nfe.getMessage());
+        } catch (BadInputException bie){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bie.getMessage());
         }
     }
 

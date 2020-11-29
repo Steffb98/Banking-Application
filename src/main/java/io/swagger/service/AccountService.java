@@ -128,26 +128,19 @@ public class AccountService {
     }
 
     public void updateBalance(Account account, BigDecimal amount, TypeOfTransactionEnum typeOfTransactionEnum){
-        switch (typeOfTransactionEnum) {
-            case ADD:
-                account.setBalance(account.getBalance().add(amount));
-                accountRepository.save(account);
-                break;
-            case SUBTRACT:
-                account.setBalance(account.getBalance().subtract(amount));
-                accountRepository.save(account);
-                break;
+
+        if (typeOfTransactionEnum == TypeOfTransactionEnum.ADD){
+            account.setBalance(account.getBalance().add(amount));
+        } else {
+            if (checkDayLimit(account)){ throw new IllegalArgumentException("You have reached your daily limt");}
+            if (checkBalance(account, amount)){ throw new IllegalArgumentException("You have not enough money on your account");}
+            account.setBalance(account.getBalance().subtract(amount));
         }
+        accountRepository.save(account);
     }
 
-    enum TypeOfTransactionEnum {
-        ADD("add"), SUBTRACT("subtract");
-
-        private String value;
-
-        TypeOfTransactionEnum(String value){this.value = value;}
-
-        public String getStringValue() {return value;}
+    public enum TypeOfTransactionEnum {
+        ADD, SUBTRACT;
     }
 }
 
