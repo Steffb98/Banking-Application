@@ -1,6 +1,7 @@
 package io.swagger.service;
 
 import io.swagger.exception.BadInputException;
+import io.swagger.exception.LimitReachedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
 import io.swagger.repository.AccountRepository;
@@ -127,13 +128,13 @@ public class AccountService {
         }
     }
 
-    public void updateBalance(Account account, BigDecimal amount, TypeOfTransactionEnum typeOfTransactionEnum){
+    public void updateBalance(Account account, BigDecimal amount, TypeOfTransactionEnum typeOfTransactionEnum) throws LimitReachedException{
 
         if (typeOfTransactionEnum == TypeOfTransactionEnum.ADD){
             account.setBalance(account.getBalance().add(amount));
         } else {
-            if (checkDayLimit(account)){ throw new IllegalArgumentException("You have reached your daily limt");}
-            if (checkBalance(account, amount)){ throw new IllegalArgumentException("You have not enough money on your account");}
+            if (checkDayLimit(account)){ throw new LimitReachedException(429, "You have reached your daily limt");}
+            if (checkBalance(account, amount)){ throw new LimitReachedException(429, "You have not enough money on your account");}
             account.setBalance(account.getBalance().subtract(amount));
         }
         accountRepository.save(account);

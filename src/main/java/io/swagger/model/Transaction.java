@@ -64,7 +64,6 @@ public class Transaction   {
    * @return id
    **/
   @Schema(required = true, description = "")
-      @NotNull
 
     public Long getId() {
     return id;
