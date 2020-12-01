@@ -1,0 +1,84 @@
+body
+{
+	background: url(background.jpg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	max-width: 100%;
+	height:auto;
+  overflow: hidden;
+}
+.container
+{
+  margin-top: 5%;
+  margin-bottom: 5%;
+  margin-right:auto;
+  margin-left:auto;
+  max-width: 80vw;
+  height: 55vw;
+  padding: 2vw;
+  background-color: white;
+  overflow: hidden;
+}
+.logo
+{
+  width: 8vw;
+}
+.logout
+{
+  width: 2vw;
+  float:right;
+  margin-top: 5vw;
+}
+#name
+{
+  margin-top: 5.5vw;
+  margin-right: 1vw;
+  float: right;
+}
+.block
+{
+  margin-top: 2vw;
+  border-radius: 25px;
+  border: 0.1vw solid black;
+  width: 79.8vw;
+  height: 43vw;
+}
+#title
+{
+  text-align: center;
+}
+.btn
+{
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 50%;
+  opacity: 0.9;
+  margin-left: 20vw;
+}
+#cancel
+{
+  margin-top: 1vw;
+  background-color: red;
+}
+input[type=text], input[type=number], #accounts
+{
+  width: 50%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  margin-left: 20vw;
+}
+.label
+{
+  margin-left: 20vw;
+  margin-top: -1vw;
+}
+#label1
+{
+  margin-top: 2vw;
+}

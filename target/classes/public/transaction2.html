@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset= "utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/transaction.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <a href="home.html">
+        <img src="style/logo.png" class="logo">
+    </a>
+    <a href="/perform_logout">
+        <img src="style/logout.png" class="logout">
+    </a>
+
+    <p id="name" for="name"></p>
+    <hr>
+
+    <div  class="block">
+        <h1 id="title">Make a new transaction</h1>
+        <hr>
+
+
+        <p id="label1" class="label">From</p>
+        <select id="accounts" onchange="checkForSaving()" >
+            <option value=""> </option>
+        </select>
+
+        <p class="label">To</p>
+        <input type="text" name="to" placeholder="NL67 INGB 1234 5678 98" id="to" required>
+
+        <p class="label">Amount</p>
+        <input type="number" name="currency-field" min="0.01" max="20000" step="0.01" placeholder="€1,000.00" id="amount">
+
+        <input type="button" name= "transaction" class="btn" id="make_transaction" value="Make transaction">
+        <a href="home.html">
+            <button id="cancel" class="btn">Cancel</button>
+        </a>
+    </div>
+</div>
+
+
+</body>
+</html>
+<script type="text/javascript">
+    var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    if(loggedInUser == null){
+        window.location = "index.html";
+    }
+    $(document).ready(function(){
+        $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+        var accounts = getAccountsByUser(loggedInUser.id)
+        accounts.forEach( account => {
+            var option = document.createElement("option")
+            option.text = account.iban;
+            document.getElementById("accounts").add(option);
+        });
+        $("#make_transaction").click(function(){
+            var amount = document.getElementById("amount").value;
+            if($('#accounts').val().trim() == 0){
+                alert("Please choose a bank account where you want to send from");
+                location.reload();
+            }
+            else if(document.getElementById("to").value == 0){
+                alert("Please choose a bank account where you want to send to");
+                location.reload();
+            }
+            var sender = getAccountByIban($('#accounts').val().trim());
+            var receiver = getAccountByIban(document.getElementById("to").value);
+            var by = loggedInUser;
+            var transaction = {}
+            transaction["id"] = 0;
+            transaction["sender"] = sender;
+            transaction["receiver"] = receiver;
+            transaction["amount"] = amount;
+            transaction["by"] = by;
+            transaction["date"] = null;
+            transaction = JSON.stringify(transaction);
+            if(sender.isactive == false){
+                alert("Sender account is not active");
+                location.reload();
+            }
+            else if(receiver.isactive == false){
+                alert("Receiver account is not active");
+                location.reload();
+            }
+            $.ajax({
+                url:'transaction',
+                type:'POST',
+                contentType: "application/json",
+                dataType: "json",
+                headers: {
+                    "Accept": "application/json",
+                },
+                data:transaction,
+                success:function(response){
+                    window.location = "home.html";
+                },
+                error: function(error){
+                    alert(error.responseText);
+                }
+            });
+        });
+    });
+
+
+    function getAccountsByUser(id) {
+        var accounts = new ArrayBuffer();
+        $.ajax({
+            url:'account/listaccount',
+            type:'GET',
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                "Accept": "application/json",
+            },
+            async: false,
+            data:{userId:id},
+            success:function(response){
+                accounts = response;
+            },
+            error: function(error){
+                alert("Invalid user");
+            }
+        });
+        return accounts;
+    };
+
+    function getAccountByIban(id){
+        var iban = id.replace("/ /g", "%20");
+        var account;
+        $.ajax({
+            url:'account/' + iban,
+            type:'GET',
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                "Accept": "application/json",
+            },
+            async: false,
+            data:{iban:iban},
+            success:function(response){
+                account = response;
+            },
+            error: function(error){
+                alert("Account doesn't exist");
+                window.location("transaction2.html");
+            }
+        });
+        return account;
+    };
+
+    function checkForSaving(){
+        var sender = getAccountByIban($('#accounts').val().trim());
+        if (sender.typeofaccount == "saving"){
+            var accounts = getAccountsByUser(loggedInUser.id);
+            accounts.forEach( account => {
+                if (account.typeofaccount == "deposit") {
+                    document.getElementById("to").value = account.iban;
+                    document.getElementById("to").readOnly = true;
+                }
+            });
+        } else {
+            document.getElementById("to").value = "";
+            document.getElementById("to").readOnly = false;
+        }
+    }
+</script>

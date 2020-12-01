@@ -1,6 +1,7 @@
 package io.swagger.api;
 
 import io.swagger.exception.AlreadyExistsException;
+import io.swagger.exception.BadInputException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,7 +64,11 @@ public class UserApiController implements UserApi {
                     .body("User has been created");
         }catch(AlreadyExistsException e){
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+                    .status(HttpStatus.FOUND)
+                    .body(e.getMessage());
+        }catch(BadInputException e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -106,6 +111,10 @@ public class UserApiController implements UserApi {
         }catch(NotFoundException e){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch(BadInputException e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

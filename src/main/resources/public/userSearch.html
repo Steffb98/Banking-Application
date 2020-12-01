@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset= "utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="style/search.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+		<a href="employeehome.html">
+    	<img src="style/logo.png" class="logo">
+		</a>
+      <a href="/perform_logout">
+          <img src="style/logout.png" class="logout">
+      </a>
+
+    <p id="name" for="name"></p>
+    <hr>
+
+    <div id="searchBalk">
+        <input type="text" class="search" id="searchName" placeholder="Search with name">
+        <input type="submit" class="submit" id="search" value="Search">
+    </div>
+
+    <div class="flex-container">
+        <div class="box">
+            <div id="info"></div>
+        </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+<script type="text/javascript">
+	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+	if(loggedInUser == null){
+    	window.location = "index.html";
+  	} else if (loggedInUser.typeofuser == "customer"){
+    	window.location = "home.html";
+  	}
+	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+	
+  $(document).ready(function(){
+
+    $("#search").click(function(){
+      var name = $('#searchName').val().trim();
+				$.ajax({
+          url:'users/search',
+          type:'get',
+					data:{name:name},
+					contentType: "application/json",
+					dataType:"json",
+          success:function(response){
+            var msg = "";
+						$.each(response,function(index){
+							fillData(response[index]);
+						});
+          },
+          error: function(error){
+						alert("No user found with that name");
+          }
+        });
+    });
+  });
+
+	function fillData(Users)
+	{
+		if(Users.id == 53){
+			alert("Forbidden User");
+		} else{
+
+		var html =  `<div class="block">
+										<h3>`	+ Users.firstname + " " + Users.lastname+`</h3>
+										<hr>
+										<p>`	+ Users.email +`</p>
+										<p>`	+ Users.typeofuser +`</p>
+										<button id="`	+ Users.id +`" class="btn">Check user information</button>
+								</div>`
+		$("#info").append(html);
+		}
+
+		document.getElementById(Users.id).addEventListener("click",function(){
+				sessionStorage.setItem('searchedUser',JSON.stringify(Users));
+				window.location = "userInformation.html";
+		});
+	}
+</script>

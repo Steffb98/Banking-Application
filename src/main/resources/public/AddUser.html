@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style/adduser.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <section class="container">
+    <a href="employeehome.html">
+      <img src="style/logo.png" class="logo">
+    </a>
+    <a href="/perform_logout">
+      <img src="style/logout.png" class="logout">
+    </a>
+
+    <p id="name" for="name"></p>
+    <hr>
+
+    <section id="user_information" class="box">
+      <section id="fields" class="block">
+        <h3>Sign up form</h3>
+        <hr>
+
+        <label for="firstname"><b>First Name</b></label>
+        <input type="text" placeholder="Leif" id="firstname" required>
+
+        <label for="lastname"><b>Last Name</b></label>
+        <input type="text" placeholder="Eriksson" id="lastname" required>
+
+        <label for="email"><b>Email</b></label>
+        <input type="email" placeholder="leiferiksson@gmail.com" id="email" required>
+
+        <label for="pwd"><b>Password</b></label>
+        <input type="password" placeholder="Password" id="pwd" required>
+
+        <label for="pswConfirm"><b>Confirm Password</b></label>
+        <input type="password" placeholder="Repeat Password" id="pswConfirm" required>
+
+        <input type="button" id="add_user" class="btn" value="Sign up">
+        <a href="employeehome.html">
+          <button id="cancel" class="btn">Cancel</button>
+        </a>
+      </section>
+    </section>
+
+
+  </section>
+</body>
+</html>
+
+<script type="text/javascript">
+	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+
+  if (loggedInUser.typeofuser === "employee"){
+	   $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+  }
+  else{
+     window.location = "home.html";
+  }
+
+  $(document).ready(function(){
+    $("#add_user").click(function(){
+      var firstName = $('#firstname').val().trim();
+      var lastName = $('#lastname').val().trim();
+      var eMail = $('#email').val().trim();
+      var pw1 = $('#pwd').val().trim();
+      var pw2 = $('#pswConfirm').val().trim();
+      if (firstName != "" && lastName != "" && eMail != "" && pw1 != "" && pw2 != "") {
+        if(ValidateEmail(eMail)){
+          if (pw1 == pw2) {
+            if (ValidatePassword(pw1)) {
+              var user = {}
+              user["id"] = 0;
+              user["firstname"] = firstName;
+              user["lastname"] = lastName;
+              user["email"] = eMail;
+              user["password"] = pw1;
+              user["isactive"] = true;
+              user["typeofuser"] = "customer";
+              user = JSON.stringify(user);
+              $.ajax({
+                url:'users',
+                type:'POST',
+                contentType: "application/json",
+      					data:user,
+                dataType: "json",
+                success:function(response){
+                  var responseUser = response;
+                  succes = CreateAccounts(responseUser.id);
+                  if (succes == true){
+                    alert("The new user has been succesfully created!");
+                    window.location = "employeehome.html";
+                  }else{
+                    alert("something went wrong while trying to create the accounts for the new user");
+                  }
+                },
+                error: function(error){
+      						alert("This email already exists");
+                }
+              });
+            }
+            else{
+              alert("Password must exist of 8-15 characters, atleast 1 lower- and uppercase letter, 1 number and 1 special character");
+            }
+          }
+          else{
+            alert("Passwords do not match")
+          }
+        }
+        else{
+          alert("Please provide a correct email address");
+        }
+      }else{
+        alert("Please fill in all fields");
+      }
+    });
+  });
+
+  function CreateAccounts(userid){
+    var account = {}
+    account["minimumbalance"] = -100;
+    account["iban"] = "";
+    account["balance"] = 0;
+    account["typeofaccount"] = "";
+    account["isactive"] = true;
+    account["userid"] = userid;
+    account["daylimit"] = 5;
+    account["transactionlimit"] = 20000;
+    account["numberoftransactions"] = 0;
+    var succes = true;
+    succes = CreateSavingAccount(account);
+    if(succes == false){
+      return succes;
+    }
+    succes = CreateDepositAccount(account);
+    return succes;
+  }
+
+  function CreateSavingAccount(account){
+    account["typeofaccount"] = "saving";
+    account = JSON.stringify(account);
+    var succes = false;
+    $.ajax({
+      url:'account',
+      type:'POST',
+      async:false,
+      contentType: "application/json",
+      data:account,
+      dataType: "json",
+      success:function(response){
+        succes = true;
+      },
+      error: function(error){
+        succes = false;
+      }
+    });
+    return succes;
+  }
+
+  function CreateDepositAccount(account){
+    account["typeofaccount"] = "deposit";
+    account = JSON.stringify(account);
+    var succes = false;
+    $.ajax({
+      url:'account',
+      type:'POST',
+      async:false,
+      contentType: "application/json",
+      data:account,
+      dataType: "json",
+      success:function(response){
+        succes = true;
+      },
+      error: function(error){
+        succes = false;
+      }
+    });
+    return succes;
+  }
+
+  function ValidateEmail(email){
+    var filter=/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+    if (filter.test(email)) {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  function ValidatePassword(pw){
+    var decimal=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    if(decimal.test(pw))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+</script>
