@@ -86,7 +86,7 @@ public class UserApiController implements UserApi {
         try {
             userService.toggleUserStatus(userId);
             return ResponseEntity
-                    .status(HttpStatus.CREATED)
+                    .status(HttpStatus.OK)
                     .body("User activity has been changed");
         }catch(NotFoundException e){
             return ResponseEntity

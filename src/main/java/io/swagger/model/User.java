@@ -56,33 +56,7 @@ public class User   {
   /**
    * Gets or Sets typeofuser
    */
-  public enum TypeofuserEnum {
-    CUSTOMER("customer"),
-    
-    EMPLOYEE("employee");
 
-    private String value;
-
-    TypeofuserEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static TypeofuserEnum fromValue(String text) {
-      for (TypeofuserEnum b : TypeofuserEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
   @JsonProperty("typeofuser")
   private TypeofuserEnum typeofuser = null;
 
