@@ -1,9 +1,11 @@
 package io.swagger.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,11 +22,13 @@ import static io.swagger.configuration.ApplicationUserPermission.*;
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final PasswordEncoder passwordEncoder;
-
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder){
-        this.passwordEncoder = passwordEncoder;
+    private UserDetailsService userDetailsService;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        auth.userDetailsService(userDetailsService);
     }
 
     @Override
@@ -46,26 +50,5 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .and()
                 .httpBasic();
-    }
-
-    @Override
-    @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails steffUser = User.builder()
-                .username("customer")
-                .password(passwordEncoder.encode("password"))
-                .authorities(CUSTOMER.getGrantedAuthorities())
-                .build();
-
-        UserDetails adminUser = User.builder()
-                .username("employee")
-                .password(passwordEncoder.encode("password"))
-                .authorities(EMPLOYEE.getGrantedAuthorities())
-                .build();
-
-        return new InMemoryUserDetailsManager(
-                steffUser,
-                adminUser
-        );
     }
 }

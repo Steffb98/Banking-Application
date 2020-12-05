@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,6 +73,8 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
+            Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            System.out.println(security);
             return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
         }catch(NotFoundException e){
             return ResponseEntity
