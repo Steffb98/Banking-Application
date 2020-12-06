@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.threeten.bp.OffsetDateTime;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,13 @@ public class TransactionService {
         this.userService = userService;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     public void addTransaction(Transaction transaction) throws BadInputException, NotFoundException, LimitReachedException {
+
+        if (accountService.getAccountByIban(transaction.getSender()).getTransactionlimit().compareTo(transaction.getAmount()) <= 0){
+            throw new BadInputException(401, "Amount exceed the transactionlimit");
+        }
+
         transaction.setDate(OffsetDateTime.now());
         accountService.updateBalance(accountService.getAccountByIban(transaction.getSender()), transaction.getAmount(), AccountService.TypeOfTransactionEnum.SUBTRACT);
         accountService.updateBalance(accountService.getAccountByIban(transaction.getReceiver()), transaction.getAmount(), AccountService.TypeOfTransactionEnum.ADD);
@@ -48,7 +55,7 @@ public class TransactionService {
         // checks for valid userId
         userService.getUserById(userId);
 
-        List<Transaction> transactions = (List<Transaction>) transactionRepository.getAllByPerforminguserOrderByDate(userId);
+        List<Transaction> transactions = transactionRepository.getAllByPerforminguserOrderByDate(userId);
 
         if (transactions.isEmpty()){
             throw new NotFoundException(404, "There are no transactions found for this account");
@@ -62,7 +69,7 @@ public class TransactionService {
         // checks for valid iban
         accountService.getAccountByIban(accountId);
 
-        List<Transaction> transactions = (List<Transaction>)transactionRepository.getTransactionsByAccount(accountId);
+        List<Transaction> transactions = transactionRepository.findTransactionByReceiverOrSenderOrderByDate(accountId, accountId);
 
         if (transactions.isEmpty()){
             throw new NotFoundException(404, "There are no transactions found for this account");

@@ -5,14 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction, Long> {
 
-    Iterable<Transaction> getAllByPerforminguserOrderByDate(Long userId);
-
-    @Query("select t from Transaction t where t.receiver = ?1 or t.sender = ?1")
-    Iterable<Transaction> getTransactionsByAccount(String accountId);
+    List<Transaction> getAllByPerforminguserOrderByDate(Long userId);
 
     Transaction findTransactionById(Long id);
+
+    List<Transaction> findTransactionByReceiverOrSenderOrderByDate(String receiver, String sender);
 
 }

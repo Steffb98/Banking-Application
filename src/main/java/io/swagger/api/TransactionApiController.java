@@ -49,14 +49,11 @@ public class TransactionApiController implements TransactionApi {
 
     private TransactionService transactionService;
 
-    private AccountService accountService;
-
     @org.springframework.beans.factory.annotation.Autowired
     public TransactionApiController(ObjectMapper objectMapper, HttpServletRequest request, TransactionService transactionService, AccountService accountService) {
         this.objectMapper = objectMapper;
         this.request = request;
         this.transactionService = transactionService;
-        this.accountService = accountService;
     }
 
     public ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) throws NotFoundException ,BadInputException, LimitReachedException {

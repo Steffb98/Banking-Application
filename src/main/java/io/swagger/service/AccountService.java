@@ -133,8 +133,8 @@ public class AccountService {
         if (typeOfTransactionEnum == TypeOfTransactionEnum.ADD){
             account.setBalance(account.getBalance().add(amount));
         } else {
-            if (checkDayLimit(account)){ throw new LimitReachedException(429, "You have reached your daily limt");}
-            if (checkBalance(account, amount)){ throw new LimitReachedException(429, "You have not enough money on your account");}
+            if (checkDayLimit(account)){ throw new LimitReachedException(429, "You have reached your daily limit");}
+            if (checkBalance(account, amount)){ throw new LimitReachedException(429, "You don't have enough money on your account");}
             account.setBalance(account.getBalance().subtract(amount));
         }
         accountRepository.save(account);

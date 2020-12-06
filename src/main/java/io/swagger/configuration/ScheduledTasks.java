@@ -21,9 +21,10 @@ public class ScheduledTasks {
     @Scheduled(cron = "0 1 * * * ?")
     public void resetAccountDayLimit(){
         logger.log(Level.INFO,"Resetting day limit...");
-        for (Account account : accountService.getAllAccounts()){
-            account.setNumberoftransactions(0L);
-            accountService.updateAccount(account);
-        }
+        accountService.getAllAccounts().forEach(account -> {
+                    account.setNumberoftransactions(0L);
+                    accountService.updateAccount(account);
+                });
+
     }
 }
