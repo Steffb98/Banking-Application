@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.exception.BadInputException;
 import io.swagger.exception.LimitReachedException;
+import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Transaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,6 +64,10 @@ public class TransactionApiController implements TransactionApi {
                     .status(HttpStatus.CREATED)
                     .body("Transaction Created");
 
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
         } catch (NotFoundException nfe){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -81,6 +86,10 @@ public class TransactionApiController implements TransactionApi {
     public ResponseEntity getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId) throws NotFoundException {
         try {
             return new ResponseEntity<Transaction>(transactionService.getTransactionById(transactionId), HttpStatus.OK);
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
         } catch (NotFoundException nfe){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -91,7 +100,11 @@ public class TransactionApiController implements TransactionApi {
     public ResponseEntity getTransactionFromAccount(@Parameter(in = ParameterIn.PATH, description = "ID of an account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) throws NotFoundException, BadInputException{
         try {
             return new ResponseEntity(transactionService.getAllTransactionsFromAccount(accountId), HttpStatus.OK);
-        } catch (NotFoundException nfe){
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
+        }catch (NotFoundException nfe){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(nfe.getMessage());
@@ -105,6 +118,10 @@ public class TransactionApiController implements TransactionApi {
     public ResponseEntity getTransactionFromUser(@Parameter(in = ParameterIn.PATH, description = "ID of a user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) throws NotFoundException{
         try {
             return new ResponseEntity(transactionService.getAllTransactionsFromUser(userId), HttpStatus.OK);
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
         } catch (NotFoundException nfe){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)

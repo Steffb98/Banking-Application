@@ -2,6 +2,7 @@ package io.swagger.configuration;
 
 import io.swagger.model.Account;
 import io.swagger.model.Transaction;
+import io.swagger.model.TypeofuserEnum;
 import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.TransactionRepository;
@@ -34,8 +35,10 @@ public class MyApplicationRunner implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
         List<User> users = Arrays.asList(
-                new User("Kim", "Gelder", "663143@student.inholland.nl", "wachtwoord"),
-                new User("Cheyen", "Alberts", "568524@student.inholland.nl", "wachtwoord123")
+                new User("Kim", "Gelder", "kim", "test", TypeofuserEnum.CUSTOMER),
+                new User("Cheyen", "Alberts", "cheyen", "test", TypeofuserEnum.CUSTOMER),
+                new User("Sam", "Kuik", "sam", "test", TypeofuserEnum.CUSTOMER),
+                new User("admin", "emplyee", "test", "test", TypeofuserEnum.EMPLOYEE)
         );
 
         users.forEach(userRepository::save);
@@ -44,7 +47,11 @@ public class MyApplicationRunner implements ApplicationRunner {
 
         List<Account> accounts = Arrays.asList(
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(0).getuserId()),
-                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(0).getuserId())
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(0).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(1).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(1).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(2).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(2).getuserId())
         );
 
         accounts.forEach(accountRepository::save);
@@ -52,7 +59,8 @@ public class MyApplicationRunner implements ApplicationRunner {
         accountRepository.findAll().forEach(System.out::println);
 
         List<Transaction> transactions = Arrays.asList(
-                new Transaction(accounts.get(0).getIban(), accounts.get(1).getIban(), new BigDecimal(100), users.get(0).getuserId() )
+                new Transaction(accounts.get(0).getIban(), accounts.get(1).getIban(), new BigDecimal(100), users.get(0).getuserId()),
+                new Transaction(accounts.get(1).getIban(), accounts.get(2).getIban(), new BigDecimal(100), users.get(0).getuserId())
         );
 
         transactions.forEach(transactionRepository::save);

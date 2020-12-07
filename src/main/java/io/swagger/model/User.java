@@ -2,12 +2,16 @@ package io.swagger.model;
 
 import java.util.Collection;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
@@ -22,6 +26,7 @@ import javax.validation.constraints.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"typeofuser", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired"})
 public class User implements UserDetails {
   @Id
   @JsonProperty("userId")
@@ -44,13 +49,13 @@ public class User implements UserDetails {
   @JsonProperty("enabled")
   private Boolean enabled = null;
 
-  public User(String firstname, String lastname, String username, String password) {
+  public User(String firstname, String lastname, String username, String password, TypeofuserEnum typeOfUser) {
     this.firstname = firstname;
     this.lastname = lastname;
     this.username = username;
-    this.password = password;
+    this.password = new BCryptPasswordEncoder().encode(password);
     this.enabled = true;
-    this.typeofuser = TypeofuserEnum.CUSTOMER;
+    this.typeofuser = typeOfUser;
   }
 
   /**
@@ -164,5 +169,31 @@ public class User implements UserDetails {
   @Override
   public int hashCode() {
     return Objects.hash(userId, firstname, lastname, username, password, enabled, typeofuser);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class User {\n");
+    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    firstname: ").append(toIndentedString(firstname)).append("\n");
+    sb.append("    lastname: ").append(toIndentedString(lastname)).append("\n");
+    sb.append("    username: ").append(toIndentedString(username)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    isactive: ").append(toIndentedString(isEnabled())).append("\n");
+    sb.append("    typeofuser: ").append(toIndentedString(typeofuser)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
   }
 }

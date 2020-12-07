@@ -1,6 +1,7 @@
 package io.swagger.api;
 
 import io.swagger.exception.AlreadyExistsException;
+import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,14 +74,16 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-            Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            System.out.println(security);
             return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
         }catch(NotFoundException e){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -1,6 +1,7 @@
 package io.swagger.api;
 
 import io.swagger.exception.BadInputException;
+import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +68,11 @@ public class AccountApiController implements AccountApi {
     public ResponseEntity getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Iban of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) throws NotFoundException {
         try {
             return new ResponseEntity<Account>(accountService.getAccountByIban(accountId), HttpStatus.OK);
-        } catch(NotFoundException e) {
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
+        }catch(NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
@@ -83,7 +88,11 @@ public class AccountApiController implements AccountApi {
     public ResponseEntity getAccountByUserID(@Parameter(in = ParameterIn.PATH, description = "Id of user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
             return new ResponseEntity<List<Account>>(accountService.getAccountsByUserId(userId), HttpStatus.NOT_IMPLEMENTED);
-        } catch(NotFoundException e) {
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
+        }catch(NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());

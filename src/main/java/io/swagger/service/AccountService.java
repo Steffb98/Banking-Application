@@ -2,11 +2,15 @@ package io.swagger.service;
 
 import io.swagger.exception.BadInputException;
 import io.swagger.exception.LimitReachedException;
+import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
+import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,21 +21,35 @@ import java.util.Random;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final int IBAN_FORMAT_CHARACTERS = 18;
     private final int USERID_FORMAT_CHARACTERS = 6;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository){
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository, UserService userService){
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
-    public Account getAccountByIban(String iban) throws NotFoundException, BadInputException {
+    private void checkAccountAuthorization(Account account) throws NotAuthorizedException {
+        Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (((User) security).getuserId().equals(account.getUserid()) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
+            return;
+        }
+
+        throw new NotAuthorizedException(401, "not authorized");
+    }
+
+    public Account getAccountByIban(String iban) throws NotFoundException, BadInputException, NotAuthorizedException {
         if (iban.length() != IBAN_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of iban is incorrect");
         }
 
         Account account = accountRepository.findAccountByIban(iban);
+
+        checkAccountAuthorization(account);
 
         if (account == null) {
             throw new NotFoundException(404, "No account found with this iban");
@@ -40,7 +58,8 @@ public class AccountService {
         return account;
     }
 
-    public List<Account> getAccountsByUserId(Long userId) throws BadInputException, NotFoundException {
+    public List<Account> getAccountsByUserId(Long userId) throws BadInputException, NotFoundException, NotAuthorizedException {
+        userService.checkUserAuthorization(userId);
         if (userId.toString().length() != USERID_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of userid is incorrect");
         }
@@ -80,8 +99,6 @@ public class AccountService {
         Account newAcc = new Account(generateIban(), acc.getTypeofaccount(), acc.getUserid());
 
         accountRepository.save(newAcc);
-
-        System.out.println(newAcc);
     }
 
     public String generateIban(){
