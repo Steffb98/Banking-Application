@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -20,8 +22,12 @@ import javax.validation.constraints.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-11-21T13:18:37.550Z[GMT]")
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Transaction   {
   @Id
+  @SequenceGenerator(name = "transaction_seq", initialValue = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_seq")
   @JsonProperty("id")
   private Long id = null;
 
@@ -40,6 +46,14 @@ public class Transaction   {
   @JsonProperty("date")
   private OffsetDateTime date = null;
 
+  public Transaction(String sender, String receiver, BigDecimal amount, Long performinguser) {
+    this.sender = sender;
+    this.receiver = receiver;
+    this.amount = amount;
+    this.performinguser = performinguser;
+    this.date = OffsetDateTime.now();
+  }
+
   public Transaction id(Long id) {
     this.id = id;
     return this;
@@ -50,7 +64,6 @@ public class Transaction   {
    * @return id
    **/
   @Schema(required = true, description = "")
-      @NotNull
 
     public Long getId() {
     return id;

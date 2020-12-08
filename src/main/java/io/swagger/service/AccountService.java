@@ -1,6 +1,7 @@
 package io.swagger.service;
 
 import io.swagger.exception.BadInputException;
+import io.swagger.exception.LimitReachedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
 import io.swagger.repository.AccountRepository;
@@ -8,6 +9,7 @@ import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
@@ -103,4 +105,43 @@ public class AccountService {
             }
         }
     }
+
+    public List<Account> getAllAccounts(){ return (List<Account>) accountRepository.findAll(); }
+
+    public void updateAccount(Account account){ accountRepository.save(account); }
+
+    public Boolean checkDayLimit(Account account) {
+        if (account.getNumberoftransactions() < account.getDaylimit()) {
+            account.setNumberoftransactions(account.getNumberoftransactions() + 1);
+            accountRepository.save(account);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public Boolean checkBalance(Account account, BigDecimal amount){
+        if (account.getBalance().subtract(amount).compareTo(account.getAbsolutlimit()) == -1 ){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void updateBalance(Account account, BigDecimal amount, TypeOfTransactionEnum typeOfTransactionEnum) throws LimitReachedException{
+
+        if (typeOfTransactionEnum == TypeOfTransactionEnum.ADD){
+            account.setBalance(account.getBalance().add(amount));
+        } else {
+            if (checkDayLimit(account)){ throw new LimitReachedException(429, "You have reached your daily limit");}
+            if (checkBalance(account, amount)){ throw new LimitReachedException(429, "You don't have enough money on your account");}
+            account.setBalance(account.getBalance().subtract(amount));
+        }
+        accountRepository.save(account);
+    }
+
+    public enum TypeOfTransactionEnum {
+        ADD, SUBTRACT;
+    }
 }
+
