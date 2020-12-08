@@ -10,11 +10,11 @@ Feature: Transaction tests
     Then I get http status 404
 
   Scenario: Retrieve transactions from user
-    When I retrieve transaction from user 100001
+    When I retrieve transaction from userId 100001
     Then I get http status 200
 
   Scenario: Retrieve transaction from account
-    When I retrieve transaction from account "NL44INHO0579841500"
+    When I retrieve transaction from account "NL96INHO0844174466"
     Then I get http status 200
 
   Scenario: Creating a transaction
