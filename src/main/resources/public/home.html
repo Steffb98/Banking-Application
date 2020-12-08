@@ -1,118 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/home.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/home.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
     <a href="home.html">
-		<img src="style/logo.png" class="logo">
-		</a>
+        <img src="style/logo.png" class="logo">
+    </a>
     <a href="/perform_logout">
-      <img src="style/logout.png" class="logout">
+        <img src="style/logout.png" class="logout">
     </a>
 
-	<p id="name" for="name"></p>
-	<div id="navbar"></div>
+    <p id="name" for="name"></p>
+    <div id="navbar"></div>
     <hr>
 
     <div id="info" class="box">
-      <div class="block">
-        <a href="edit.html">
-          <img src="style/avatar.png" class="png">
-        </a>
-        <h3 id="text">Edit personal information</h3>
-      </div>
+        <div class="block">
+            <a href="edit.html">
+                <img src="style/avatar.png" class="png">
+            </a>
+            <h3 id="text">Edit personal information</h3>
+        </div>
 
-      <div id="transaction" class="block">
-        <a href="transaction2.html">
-          <img src="style/business.png" class="png">
-        </a>
-        <h3 id="text">Make a new transaction</h3>
-      </div>
+        <div id="transaction" class="block">
+            <a href="transaction2.html">
+                <img src="style/business.png" class="png">
+            </a>
+            <h3 id="text">Make a new transaction</h3>
+        </div>
 
     </div>
     <div class="vl"></div>
     <div id="accounts" class="box">
 
-      <div class="block">
-				<a href="transactionView.html">
-        <h3 id="text1">Checking</h3>
-				</a>
-				<hr>
-				<p id="nameChecking" for = "nameChecking"></p>
-        <p id="IBANChecking" for = "IBANChecking"></p>
-        <p id="moneyChecking"></p>
-      </div>
+        <div class="block">
+            <a href="transactionView.html">
+                <h3 id="text1">Checking</h3>
+            </a>
+            <hr>
+            <p id="nameChecking" for="nameChecking"></p>
+            <p id="IBANChecking" for="IBANChecking"></p>
+            <p id="moneyChecking"></p>
+        </div>
 
-      <div id="transaction" class="block">
-				<a href="savingView.html">
-        <h3 id="text1">Saving</h3>
-			</a>
-        <hr>
-        <p id="nameSaving" for = "nameSaving"></p>
-        <p id="IBANSaving" for = "IBANSaving"></p>
-        <p id="moneySaving"></p>
+        <div id="transaction" class="block">
+            <a href="savingView.html">
+                <h3 id="text1">Saving</h3>
+            </a>
+            <hr>
+            <p id="nameSaving" for="nameSaving"></p>
+            <p id="IBANSaving" for="IBANSaving"></p>
+            <p id="moneySaving"></p>
 
-      </div>
+        </div>
 
     </div>
-  </div>
+</div>
 
 </body>
 </html>
 
 <script type="text/javascript">
-	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-	if(loggedInUser == null){
-    	window.location = "index.html";
-  	}
-	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-	$('#nameChecking').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-	$('#nameSaving').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-	if(loggedInUser.typeofuser == "employee"){
-		var html =  `<nav">
+    var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    if (loggedInUser == null) {
+        window.location = "index.html";
+    }
+    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+    $('#nameChecking').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+    $('#nameSaving').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+    if (loggedInUser.typeofuser == "employee") {
+        var html = `<nav">
 										<a href="home.html">Home</a> |
 										<a href="employeehome.html">Employee Home</a>
 								</nav>`
-		$("#navbar").append(html);
-	}
+        $("#navbar").append(html);
+    }
 
-	$(document).ready(function(){
-									$.ajax({
-											url:'account/listaccount',
-											type:'get',
-											data:{userId:loggedInUser.id},
-											contentType: "application/json",
-											dataType:"json",
-											success:function(response){
-													$.each(response,function(index){
-														 showBalance(response[index]);
-													});
-											},
-											error: function(error){
-													alert("There was an error try again");
-											}
-									});
-			});
+    $(document).ready(function () {
+        $.ajax({
+            url: 'account/listaccount',
+            type: 'get',
+            data: {userId: loggedInUser.id},
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                $.each(response, function (index) {
+                    showBalance(response[index]);
+                });
+            },
+            error: function (error) {
+                alert("There was an error try again");
+            }
+        });
+    });
 
-	function showBalance (account) {
+    function showBalance(account) {
 
-							if (account.typeofaccount == "saving")
-							{
-								$('#IBANSaving').text(account.iban);
-								$('#moneySaving').text("€" + account.balance);
+        if (account.typeofaccount == "saving") {
+            $('#IBANSaving').text(account.iban);
+            $('#moneySaving').text("€" + account.balance);
 
-							} else if (account.typeofaccount == "deposit") {
-								$('#IBANChecking').text(account.iban);
-								$('#moneyChecking').text("€" + account.balance);
-							} else
-							{
-								alert("no bank info to show");
-							}
-	}
+        } else if (account.typeofaccount == "deposit") {
+            $('#IBANChecking').text(account.iban);
+            $('#moneyChecking').text("€" + account.balance);
+        } else {
+            alert("no bank info to show");
+        }
+    }
 </script>
