@@ -29,13 +29,32 @@ public class TransactionService {
     @Transactional(rollbackOn = Exception.class)
     public void addTransaction(Transaction transaction) throws BadInputException, NotFoundException, LimitReachedException {
 
-        if (accountService.getAccountByIban(transaction.getSender()).getTransactionlimit().compareTo(transaction.getAmount()) <= 0){
+        Account sender = accountService.getAccountByIban(transaction.getSender());
+        Account receiver = accountService.getAccountByIban(transaction.getReceiver());
+
+        if (sender.getIban().equals(receiver.getIban())){
+            throw new BadInputException(401, "Can not transfer to the same account");
+        }
+
+        if (sender.getTransactionlimit().compareTo(transaction.getAmount()) <= 0){
             throw new BadInputException(401, "Amount exceed the transactionlimit");
         }
 
+        if (sender.getTypeofaccount() == Account.TypeofaccountEnum.SAVING){
+            if (!receiver.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(sender.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())){
+                throw new BadInputException(401, "SAVING account can not transfer to another person's account");
+            }
+        }
+
+        if (receiver.getTypeofaccount() == Account.TypeofaccountEnum.SAVING){
+            if (!sender.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(receiver.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())){
+                throw new BadInputException(401, "SAVING account can not receive from another person's account");
+            }
+        }
+
         transaction.setDate(OffsetDateTime.now());
-        accountService.updateBalance(accountService.getAccountByIban(transaction.getSender()), transaction.getAmount(), AccountService.TypeOfTransactionEnum.SUBTRACT);
-        accountService.updateBalance(accountService.getAccountByIban(transaction.getReceiver()), transaction.getAmount(), AccountService.TypeOfTransactionEnum.ADD);
+        accountService.updateBalance(sender, transaction.getAmount(), AccountService.TypeOfTransactionEnum.SUBTRACT);
+        accountService.updateBalance(receiver, transaction.getAmount(), AccountService.TypeOfTransactionEnum.ADD);
         transactionRepository.save(transaction);
     }
 

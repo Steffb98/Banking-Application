@@ -108,6 +108,10 @@ public class AccountService {
 
     public List<Account> getAllAccounts(){ return (List<Account>) accountRepository.findAll(); }
 
+    public Account getAccountFromUserIdWhereTypeOfAccountEquals(Long userId, Account.TypeofaccountEnum typeOfAccount){
+        return accountRepository.findAccountByUseridAndTypeofaccountEquals(userId, typeOfAccount);
+    }
+
     public void updateAccount(Account account){ accountRepository.save(account); }
 
     public Boolean checkDayLimit(Account account) {
