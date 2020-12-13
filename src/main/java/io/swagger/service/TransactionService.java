@@ -20,9 +20,9 @@ import java.util.Optional;
 
 @Service
 public class TransactionService {
-    private TransactionRepository transactionRepository;
-    private AccountService accountService;
-    private UserService userService;
+    private final TransactionRepository transactionRepository;
+    private final AccountService accountService;
+    private final UserService userService;
 
     public TransactionService(TransactionRepository transactionRepository, AccountService accountService, UserService userService) {
         this.transactionRepository = transactionRepository;
@@ -34,7 +34,8 @@ public class TransactionService {
         Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         //TODO: Fix when receivinguserid is in transaction model
-        if (((User) security).getuserId().equals(transaction.getPerforminguser()) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
+        if (((User) security).getuserId().equals(transaction.getPerforminguser()) ||
+                ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
             return;
         }
 
