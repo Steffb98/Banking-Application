@@ -1,5 +1,6 @@
 package io.swagger.configuration;
 
+import io.swagger.service.UserDetailServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -22,13 +23,16 @@ import static io.swagger.configuration.ApplicationUserPermission.*;
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailServiceImp userDetailsServiceImp;
+
     @Autowired
-    private UserDetailsService userDetailsService;
+    public ApplicationSecurityConfig(UserDetailServiceImp userDetailsServiceImp) {
+        this.userDetailsServiceImp = userDetailsServiceImp;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsServiceImp);
     }
 
     @Override
