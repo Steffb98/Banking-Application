@@ -1,19 +1,17 @@
 package io.swagger.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
+import org.threeten.bp.LocalDateTime;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Transaction
@@ -43,15 +41,19 @@ public class Transaction   {
   @JsonProperty("performinguser")
   private Long performinguser = null;
 
-  @JsonProperty("date")
-  private OffsetDateTime date = null;
+  @JsonProperty("receivinguser")
+  private Long receivinguser = null;
 
-  public Transaction(String sender, String receiver, BigDecimal amount, Long performinguser) {
+  @JsonProperty("date")
+  private LocalDateTime date = null;
+
+  public Transaction(String sender, String receiver, BigDecimal amount, Long performinguser, Long receivinguser) {
     this.sender = sender;
     this.receiver = receiver;
     this.amount = amount;
     this.performinguser = performinguser;
-    this.date = OffsetDateTime.now();
+    this.date = LocalDateTime.now();
+    this.receivinguser = receivinguser;
   }
 
   public Transaction id(Long id) {
@@ -154,7 +156,15 @@ public class Transaction   {
     this.performinguser = performinguser;
   }
 
-  public Transaction date(OffsetDateTime date) {
+  public Long getReceivinguser() {
+    return receivinguser;
+  }
+
+  public void setReceivinguser(Long receivinguser) {
+    this.receivinguser = receivinguser;
+  }
+
+  public Transaction date(LocalDateTime date) {
     this.date = date;
     return this;
   }
@@ -166,11 +176,11 @@ public class Transaction   {
   @Schema(description = "")
   
     @Valid
-    public OffsetDateTime getDate() {
+    public LocalDateTime getDate() {
     return date;
   }
 
-  public void setDate(OffsetDateTime date) {
+  public void setDate(LocalDateTime date) {
     this.date = date;
   }
 
@@ -207,7 +217,7 @@ public class Transaction   {
     sb.append("    receiver: ").append(toIndentedString(receiver)).append("\n");
     sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
     sb.append("    performinguser: ").append(toIndentedString(performinguser)).append("\n");
-    sb.append("    date: ").append(toIndentedString(date)).append("\n");
+    sb.append("    date: ").append(toIndentedString(date.withNano(0))).append("\n");
     sb.append("}");
     return sb.toString();
   }

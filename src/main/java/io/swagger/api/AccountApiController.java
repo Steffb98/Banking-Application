@@ -1,10 +1,11 @@
 package io.swagger.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.exception.BadInputException;
+import io.swagger.exception.ForbiddenException;
 import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.service.AccountService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -14,12 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-11-21T13:18:37.550Z[GMT]")
@@ -68,6 +69,10 @@ public class AccountApiController implements AccountApi {
     public ResponseEntity getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Iban of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) throws NotFoundException {
         try {
             return new ResponseEntity<Account>(accountService.getAccountByIban(accountId), HttpStatus.OK);
+        } catch (ForbiddenException e) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(e.getMessage());
         } catch (NotAuthorizedException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
@@ -111,6 +116,10 @@ public class AccountApiController implements AccountApi {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body("Account status is succesfully toggled");
+        } catch (ForbiddenException e) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(e.getMessage());
         } catch (NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)

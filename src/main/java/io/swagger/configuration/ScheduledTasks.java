@@ -1,6 +1,5 @@
 package io.swagger.configuration;
 
-import io.swagger.model.Account;
 import io.swagger.service.AccountService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

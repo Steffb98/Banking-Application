@@ -1,15 +1,12 @@
 package io.swagger.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.Sets;
 import io.swagger.configuration.ApplicationUserPermission;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import static io.swagger.configuration.ApplicationUserPermission.*;
 
 public enum TypeofuserEnum {

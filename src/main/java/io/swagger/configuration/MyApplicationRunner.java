@@ -46,6 +46,7 @@ public class MyApplicationRunner implements ApplicationRunner {
         userRepository.findAll().forEach(System.out::println);
 
         List<Account> accounts = Arrays.asList(
+                new Account("NL01INHO0000000001", Account.TypeofaccountEnum.BANK, users.get(0).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(0).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(0).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(1).getuserId()),
@@ -59,8 +60,13 @@ public class MyApplicationRunner implements ApplicationRunner {
         accountRepository.findAll().forEach(System.out::println);
 
         List<Transaction> transactions = Arrays.asList(
-                new Transaction(accounts.get(0).getIban(), accounts.get(1).getIban(), new BigDecimal(100), users.get(0).getuserId()),
-                new Transaction(accounts.get(1).getIban(), accounts.get(2).getIban(), new BigDecimal(100), users.get(0).getuserId())
+                new Transaction(accounts.get(2).getIban(), accounts.get(4).getIban(), new BigDecimal(100), users.get(0).getuserId(), users.get(1).getuserId()),
+                new Transaction(accounts.get(4).getIban(), accounts.get(6).getIban(), new BigDecimal(100), users.get(1).getuserId(), users.get(2).getuserId()),
+                new Transaction(accounts.get(1).getIban(), accounts.get(2).getIban(), new BigDecimal(100), users.get(0).getuserId(), users.get(0).getuserId()),
+                //Deposit to bank from User Sam
+                new Transaction(accounts.get(0).getIban(), accounts.get(6).getIban(), new BigDecimal(500), 100000L, users.get(2).getuserId()),
+                //Withdrawal from bank to user Kim
+                new Transaction(accounts.get(2).getIban(), accounts.get(0).getIban(), new BigDecimal(5), users.get(0).getuserId(), 100000L)
         );
 
         transactions.forEach(transactionRepository::save);

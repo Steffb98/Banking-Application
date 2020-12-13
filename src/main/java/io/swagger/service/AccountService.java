@@ -1,9 +1,6 @@
 package io.swagger.service;
 
-import io.swagger.exception.BadInputException;
-import io.swagger.exception.LimitReachedException;
-import io.swagger.exception.NotAuthorizedException;
-import io.swagger.exception.NotFoundException;
+import io.swagger.exception.*;
 import io.swagger.model.Account;
 import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
@@ -16,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
+
+import static io.swagger.model.Account.TypeofaccountEnum.BANK;
 
 @Service
 public class AccountService {
@@ -42,12 +41,16 @@ public class AccountService {
         throw new NotAuthorizedException(401, "not authorized");
     }
 
-    public Account getAccountByIban(String iban) throws NotFoundException, BadInputException, NotAuthorizedException {
+    public Account getAccountByIban(String iban) throws NotFoundException, BadInputException, NotAuthorizedException, ForbiddenException {
         if (iban.length() != IBAN_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of iban is incorrect");
         }
 
         Account account = accountRepository.findAccountByIban(iban);
+
+        if (account.getTypeofaccount() == BANK){
+            throw new ForbiddenException(403, "can't access this account");
+        }
 
         checkAccountAuthorization(account);
 
@@ -73,13 +76,17 @@ public class AccountService {
         return accounts;
     }
 
-    public void toggleActivityStatus(String iban) throws NotFoundException, BadInputException {
+    public void toggleActivityStatus(String iban) throws NotFoundException, BadInputException, ForbiddenException {
         if (iban.length() != IBAN_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of iban is incorrect");
         }
 
         //retrieving account from database to use the built-in security from h2o
         Account account = accountRepository.findAccountByIban(iban);
+
+        if (account.getTypeofaccount() == BANK){
+            throw new ForbiddenException(403, "can't access this account");
+        }
 
         if (account == null) {
             throw new NotFoundException(404, "No account found with this iban");
@@ -104,7 +111,7 @@ public class AccountService {
     public String generateIban(){
         while(true){
             Random rnd = new Random();
-            int min = 01;
+            int min = 02;
             int max = 99;
             int generatedNumber = rnd.nextInt(max - min) + min;
 

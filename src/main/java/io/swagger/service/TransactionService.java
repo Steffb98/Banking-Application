@@ -1,40 +1,40 @@
 package io.swagger.service;
 
-import io.swagger.exception.BadInputException;
-import io.swagger.exception.LimitReachedException;
-import io.swagger.exception.NotAuthorizedException;
-import io.swagger.exception.NotFoundException;
+import io.swagger.exception.*;
 import io.swagger.model.Account;
 import io.swagger.model.Transaction;
 import io.swagger.model.User;
+import io.swagger.repository.AccountRepository;
 import io.swagger.repository.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.LocalDateTime;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
+
+import static io.swagger.model.Account.TypeofaccountEnum.SAVING;
 
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
     private final UserService userService;
+    private final AccountRepository accountRepository;
 
-    public TransactionService(TransactionRepository transactionRepository, AccountService accountService, UserService userService) {
+    public TransactionService(TransactionRepository transactionRepository, AccountService accountService, UserService userService, AccountRepository accountRepository) {
         this.transactionRepository = transactionRepository;
         this.accountService = accountService;
         this.userService = userService;
+        this.accountRepository = accountRepository;
     }
 
     public void checkTransactionAuthorization(Transaction transaction) throws NotAuthorizedException {
         Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        //TODO: Fix when receivinguserid is in transaction model
         if (((User) security).getuserId().equals(transaction.getPerforminguser()) ||
+                ((User) security).getuserId().equals(transaction.getReceivinguser()) ||
                 ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
             return;
         }
@@ -43,32 +43,35 @@ public class TransactionService {
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public void addTransaction(Transaction transaction) throws BadInputException, NotFoundException, LimitReachedException, NotAuthorizedException {
+    public void addTransaction(Transaction transaction) throws BadInputException, NotFoundException, LimitReachedException, NotAuthorizedException, ForbiddenException {
 
         Account sender = accountService.getAccountByIban(transaction.getSender());
         Account receiver = accountService.getAccountByIban(transaction.getReceiver());
 
+        //this field is used for authorization and for getting all transactions for the receiving user
+        transaction.setReceivinguser(receiver.getUserid());
+
         if (sender.getIban().equals(receiver.getIban())){
-            throw new BadInputException(401, "Can not transfer to the same account");
+            throw new BadInputException(400, "Can not transfer to the same account");
         }
 
         if (sender.getTransactionlimit().compareTo(transaction.getAmount()) <= 0){
-            throw new BadInputException(401, "Amount exceed the transactionlimit");
+            throw new BadInputException(400, "Amount exceed the transactionlimit");
         }
 
-        if (sender.getTypeofaccount() == Account.TypeofaccountEnum.SAVING){
+        if (sender.getTypeofaccount() == SAVING){
             if (!receiver.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(sender.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())){
-                throw new BadInputException(401, "SAVING account can not transfer to another person's account");
+                throw new BadInputException(400, "SAVING account can not transfer to another person's account");
             }
         }
 
-        if (receiver.getTypeofaccount() == Account.TypeofaccountEnum.SAVING){
+        if (receiver.getTypeofaccount() == SAVING){
             if (!sender.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(receiver.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())){
-                throw new BadInputException(401, "SAVING account can not receive from another person's account");
+                throw new BadInputException(400, "SAVING account can not receive from another person's account");
             }
         }
 
-        transaction.setDate(OffsetDateTime.now());
+        transaction.setDate(LocalDateTime.now());
         accountService.updateBalance(sender, transaction.getAmount(), AccountService.TypeOfTransactionEnum.SUBTRACT);
         accountService.updateBalance(receiver, transaction.getAmount(), AccountService.TypeOfTransactionEnum.ADD);
         transactionRepository.save(transaction);
@@ -89,7 +92,7 @@ public class TransactionService {
         // checks for valid userId
         userService.getUserById(userId);
 
-        List<Transaction> transactions = transactionRepository.getAllByPerforminguserOrderByDate(userId);
+        List<Transaction> transactions = transactionRepository.getAllByPerforminguserOrReceivinguserOrderByDate(userId, userId);
 
         if (transactions.isEmpty()){
             throw new NotFoundException(404, "There are no transactions found for this account");
@@ -98,7 +101,7 @@ public class TransactionService {
         return transactions;
     }
 
-    public List<Transaction> getAllTransactionsFromAccount(String accountId) throws NotFoundException, BadInputException, NotAuthorizedException {
+    public List<Transaction> getAllTransactionsFromAccount(String accountId) throws NotFoundException, BadInputException, NotAuthorizedException, ForbiddenException {
 
         // checks for valid iban
         accountService.getAccountByIban(accountId);

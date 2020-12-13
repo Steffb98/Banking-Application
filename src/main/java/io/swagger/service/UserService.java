@@ -6,16 +6,9 @@ import io.swagger.exception.NotFoundException;
 import io.swagger.model.TypeofuserEnum;
 import io.swagger.model.User;
 import io.swagger.repository.UserRepository;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-
-import static io.swagger.configuration.ApplicationUserPermission.*;
 
 @Service
 public class UserService {
