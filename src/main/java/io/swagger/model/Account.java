@@ -1,13 +1,9 @@
 package io.swagger.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
-import java.util.Random;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +11,9 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Account
@@ -53,7 +51,9 @@ public class Account   {
   public enum TypeofaccountEnum {
     SAVING("saving"),
     
-    DEPOSIT("deposit");
+    DEPOSIT("deposit"),
+
+    BANK("bank");
 
     private String value;
 
