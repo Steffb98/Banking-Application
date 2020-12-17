@@ -13,5 +13,7 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
 
     List<Account> findAccountsByUserid(Long userId);
 
+    Account findAccountByUseridAndTypeofaccountEquals(Long userId, Account.TypeofaccountEnum typeOfAccount);
+
 
 }
