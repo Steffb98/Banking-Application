@@ -32,6 +32,11 @@ public class UserService {
         throw new NotAuthorizedException(401, "not authorized");
     }
 
+    public User getLoggedInUser(){
+        Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (User) security;
+    }
+
     public User getUserById(Long userId) throws NotFoundException, NotAuthorizedException {
         checkUserAuthorization(userId);
         User user = userRepository.findUserByUserId(userId);

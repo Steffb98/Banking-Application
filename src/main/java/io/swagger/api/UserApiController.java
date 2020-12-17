@@ -40,6 +40,14 @@ public class UserApiController implements UserApi {
         this.userService = userService;
     }
 
+    public ResponseEntity getLoggedInUser(){
+        try {
+            return new ResponseEntity<User>(userService.getLoggedInUser(),HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
         try {
             userService.createUser(body);

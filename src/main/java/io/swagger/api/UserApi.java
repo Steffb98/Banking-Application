@@ -34,6 +34,13 @@ public interface UserApi {
         method = RequestMethod.POST)
     ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body);
 
+    @Operation(summary = "Get logged in user", description = "get the currently logged in user", tags={ "user" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User created")})
+    @RequestMapping(value = "/user/loggedin",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    ResponseEntity<Void> getLoggedInUser();
 
     @Operation(summary = "get a user with specific userId", description = "", tags={ "user" })
     @ApiResponses(value = { 
