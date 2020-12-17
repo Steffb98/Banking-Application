@@ -38,7 +38,7 @@ public class UsersTest {
     @Test
     public void settingEmptyEmailShouldThrowException(){
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> user.setEmail(""));
+                () -> user.setUsername(""));
         assertEquals("Email cannot be empty", exception.getMessage());
     }
 

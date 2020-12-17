@@ -7,6 +7,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.messages.internal.com.google.gson.Gson;
+import io.swagger.model.TypeofuserEnum;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
 import io.swagger.model.Account;
@@ -85,7 +86,7 @@ public class StepDefinitions {
     @When("I post an user")
     public void iPostAnUser() throws JsonProcessingException, URISyntaxException {
         ObjectMapper mapper = new ObjectMapper();
-        user = new User("Bert", "Jan", "123456@student.inholland.nl", "ola123!");
+        user = new User("Bert", "Jan", "123456@student.inholland.nl", "ola123!", TypeofuserEnum.CUSTOMER);
         URI uri = new URI(baseUrl + "user");
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(user), headers);

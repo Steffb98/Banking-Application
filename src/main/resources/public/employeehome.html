@@ -62,11 +62,11 @@
 
 <script type="text/javascript">
 	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-  if(loggedInUser == null){
-    window.location = "index.html";
-  } else if (loggedInUser.typeofuser == "customer"){
-    window.location = "home.html";
-  }
+  // if(loggedInUser == null){
+  //   window.location = "index.html";
+  // } else if (loggedInUser.typeofuser == "customer"){
+  //   window.location = "home.html";
+  // }
 	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
   if(loggedInUser.typeofuser == "employee"){
 		var html =  `<nav">

@@ -59,7 +59,7 @@
             <p id="moneySaving"></p>
 
         </div>
-
+       
     </div>
 </div>
 
@@ -68,9 +68,9 @@
 
 <script type="text/javascript">
     var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-    if (loggedInUser == null) {
-        window.location = "index.html";
-    }
+    // if (loggedInUser == null) {
+    //     window.location = "index.html";
+    // }
     $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
     $('#nameChecking').text(loggedInUser.firstname + " " + loggedInUser.lastname);
     $('#nameSaving').text(loggedInUser.firstname + " " + loggedInUser.lastname);

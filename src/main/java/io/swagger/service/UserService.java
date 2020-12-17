@@ -42,13 +42,13 @@ public class UserService {
     }
 
     public void createUser(User user) throws AlreadyExistsException, BadInputException {
-        if(userRepository.findByEmail(user.getEmail()) != null){
+        if(userRepository.findByUsername(user.getUsername()) != null){
             throw new AlreadyExistsException(409, "Email already exists");
         }
-        else if(!EmailValidator.getInstance().isValid(user.getEmail())){
+        else if(!EmailValidator.getInstance().isValid(user.getUsername())){
             throw new BadInputException(400, "Email format is incorrect");
         }
-        userRepository.save(new User(user.getFirstname(), user.getLastname(), user.getEmail(), user.getPassword()));
+        userRepository.save(new User(user.getFirstname(), user.getLastname(), user.getUsername(), user.getPassword(), TypeofuserEnum.CUSTOMER));
     }
 
     public void toggleUserStatus(Long userId) throws NotFoundException {
@@ -61,7 +61,7 @@ public class UserService {
             throw new NotFoundException(404, "User not found");
         }
         //setting isActive to the opposite of the current value
-        user.setIsactive(!user.isIsactive());
+        user.setEnabled(!user.isEnabled());
         userRepository.save(user);
     }
 
@@ -70,7 +70,7 @@ public class UserService {
         if(user == null) {
             throw new NotFoundException(404, "User not found");
         }
-        else if(!EmailValidator.getInstance().isValid(body.getEmail())){
+        else if(!EmailValidator.getInstance().isValid(body.getUsername())){
             throw new BadInputException(400, "Email format is incorrect");
         }
         if (!body.getFirstname().isEmpty()) {
