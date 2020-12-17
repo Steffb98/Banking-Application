@@ -23,3 +23,4 @@ Feature: Account tests
   Scenario: Retrieve accounts with userId is status OK
     When I retrieve account with userId 100001
     Then I get http status 200
+    And I get a list of 2 accounts

@@ -51,21 +51,21 @@ public class StepDefinitions {
 
     // USER TESTS!!!
 
-    @When("I update user with userId {int}")
-    public void iUpdateUserWithUserId(int userId) throws URISyntaxException {
-        URI uri = new URI(baseUrl + "user/" + userId);
-        try{
-
-            responseEntity = new ResponseEntity<String>(HttpStatus.OK);
-            user = new User("Bert", "Jan", "123456@student.inholland.nl", "ola123!");
-            ObjectMapper mapper = new ObjectMapper();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(user), headers);
-            responseEntity = template.postForEntity(uri, entity, String.class);
-        } catch (RestClientException | JsonProcessingException RCE){
-            responseEntity = new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @When("I update user with userId {int}")
+//    public void iUpdateUserWithUserId(int userId) throws URISyntaxException {
+//        URI uri = new URI(baseUrl + "user/" + userId);
+//        try{
+//
+//            responseEntity = new ResponseEntity<String>(HttpStatus.OK);
+//            user = new User("Bert", "Jan", "123456@student.inholland.nl", "ola123!");
+//            ObjectMapper mapper = new ObjectMapper();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(user), headers);
+//            responseEntity = template.postForEntity(uri, entity, String.class);
+//        } catch (RestClientException | JsonProcessingException RCE){
+//            responseEntity = new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
     @When("I retrieve user with userId {int}")
     public void iRetrieveUserWithId(int userId) throws URISyntaxException {
@@ -143,7 +143,7 @@ public class StepDefinitions {
     @When("I post an account")
     public void iPostAnAccount() throws JsonProcessingException, URISyntaxException {
         ObjectMapper mapper = new ObjectMapper();
-        account = new Account("NL44INHO0123456789", BigDecimal.valueOf(0.00), Account.TypeofaccountEnum.SAVING, BigDecimal.valueOf(-10.00), true, 100001L, 5L, new BigDecimal(20000), 5L);
+        account = new Account("NL44INHO0123456789", BigDecimal.valueOf(0.00), Account.TypeofaccountEnum.SAVING, BigDecimal.valueOf(-10.00), true, 100002L, 5L, new BigDecimal(20000), 5L);
         URI uri = new URI(baseUrl + "account");
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(account), headers);
@@ -203,16 +203,15 @@ public class StepDefinitions {
                         .getString("amount"));
     }
 
-    @When("I post a transaction")
-    public void iPostATransaction() throws JsonProcessingException, URISyntaxException, JSONException {
-
-        ObjectMapper mapper = new ObjectMapper();
-        transaction = new Transaction("NL53INHO0268054510", "NL96INHO0844174466", new BigDecimal(10.00), 100001L);
-        URI uri = new URI(baseUrl + "transaction");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(transaction), headers);
-        responseEntity = template.postForEntity(uri, entity, String.class);
-    }
+//    @When("I post a transaction")
+//    public void iPostATransaction() throws JsonProcessingException, URISyntaxException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        transaction = new Transaction(10l,"NL35INHO0919663403", "NL05INHO0800426579", BigDecimal.valueOf(10), 100001L, OffsetDateTime.now());
+//        URI uri = new URI(baseUrl + "transaction");
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(transaction), headers);
+//        responseEntity = template.postForEntity(uri, entity, String.class);
+//    }
 
     @When("I retrieve transaction from userId {int}")
     public void iRetrieveTransactionFromUserWithId(int userId) throws URISyntaxException {

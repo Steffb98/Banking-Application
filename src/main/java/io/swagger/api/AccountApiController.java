@@ -82,7 +82,7 @@ public class AccountApiController implements AccountApi {
 
     public ResponseEntity getAccountByUserID(@Parameter(in = ParameterIn.PATH, description = "Id of user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         try {
-            return new ResponseEntity<List<Account>>(accountService.getAccountsByUserId(userId), HttpStatus.NOT_IMPLEMENTED);
+            return new ResponseEntity<List<Account>>(accountService.getAccountsByUserId(userId), HttpStatus.OK);
         } catch(NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)

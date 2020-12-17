@@ -22,6 +22,6 @@ Feature: Users tests
     Then I get http status 400
 
 
-  Scenario: Update user with userId
-    When I update user with userId 100002
-    Then I get http status 200
+#  Scenario: Update user with userId
+#    When I update user with userId 100002
+#    Then I get http status 200

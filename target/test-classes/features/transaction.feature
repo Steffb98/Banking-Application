@@ -14,9 +14,9 @@ Feature: Transaction tests
     Then I get http status 200
 
   Scenario: Retrieve transaction from account
-    When I retrieve transaction from account "NL96INHO0844174466"
+    When I retrieve transaction from account "NL76INHO0103560337"
     Then I get http status 200
 
-  Scenario: Creating a transaction
-    When I post a transaction
-    Then I get http status 201
+#  Scenario: Creating a transaction
+#    When I post a transaction
+#    Then I get http status 201
