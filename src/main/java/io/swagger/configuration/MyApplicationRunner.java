@@ -1,8 +1,11 @@
 package io.swagger.configuration;
 
 import io.swagger.model.Account;
+import io.swagger.model.Transaction;
+import io.swagger.model.TypeofuserEnum;
 import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
+import io.swagger.repository.TransactionRepository;
 import io.swagger.repository.UserRepository;
 import io.swagger.service.AccountService;
 import org.springframework.boot.ApplicationArguments;
@@ -19,19 +22,23 @@ public class MyApplicationRunner implements ApplicationRunner {
     private UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final AccountService accountService;
+    private final TransactionRepository transactionRepository;
 
-    public MyApplicationRunner(UserRepository userRepository, AccountRepository accountRepository, AccountService accountService) {
+    public MyApplicationRunner(UserRepository userRepository, AccountRepository accountRepository, AccountService accountService, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
-        this.accountRepository= accountRepository;
+        this.accountRepository = accountRepository;
         this.accountService = accountService;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
         List<User> users = Arrays.asList(
-                new User("Kim", "Gelder", "663143@student.inholland.nl", "wachtwoord"),
-                new User("Cheyen", "Alberts", "568524@student.inholland.nl", "wachtwoord123")
+                new User("Kim", "Gelder", "kim", "test", TypeofuserEnum.CUSTOMER),
+                new User("Cheyen", "Alberts", "cheyen", "test", TypeofuserEnum.CUSTOMER),
+                new User("Sam", "Kuik", "sam", "test", TypeofuserEnum.CUSTOMER),
+                new User("admin", "emplyee", "test", "test", TypeofuserEnum.EMPLOYEE)
         );
 
         users.forEach(userRepository::save);
@@ -39,12 +46,31 @@ public class MyApplicationRunner implements ApplicationRunner {
         userRepository.findAll().forEach(System.out::println);
 
         List<Account> accounts = Arrays.asList(
-                new Account(accountService.generateIban(), BigDecimal.valueOf(0.00), Account.TypeofaccountEnum.SAVING, BigDecimal.valueOf(-10.00), true, 100001L, 5L, new BigDecimal(20000), 5L),
-                new Account(accountService.generateIban(), BigDecimal.valueOf(0.00), Account.TypeofaccountEnum.DEPOSIT, BigDecimal.valueOf(-10.00), true, 100001L, 5L, new BigDecimal(20000), 5L)
+                new Account("NL01INHO0000000001", Account.TypeofaccountEnum.BANK, users.get(0).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(0).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(0).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(1).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(1).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(2).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(2).getuserId())
         );
 
         accounts.forEach(accountRepository::save);
 
         accountRepository.findAll().forEach(System.out::println);
+
+        List<Transaction> transactions = Arrays.asList(
+                new Transaction(accounts.get(2).getIban(), accounts.get(4).getIban(), new BigDecimal(100), users.get(0).getuserId(), users.get(1).getuserId()),
+                new Transaction(accounts.get(4).getIban(), accounts.get(6).getIban(), new BigDecimal(100), users.get(1).getuserId(), users.get(2).getuserId()),
+                new Transaction(accounts.get(1).getIban(), accounts.get(2).getIban(), new BigDecimal(100), users.get(0).getuserId(), users.get(0).getuserId()),
+                //Deposit to bank from User Sam
+                new Transaction(accounts.get(0).getIban(), accounts.get(6).getIban(), new BigDecimal(500), 100000L, users.get(2).getuserId()),
+                //Withdrawal from bank to user Kim
+                new Transaction(accounts.get(2).getIban(), accounts.get(0).getIban(), new BigDecimal(5), users.get(0).getuserId(), 100000L)
+        );
+
+        transactions.forEach(transactionRepository::save);
+
+        transactionRepository.findAll().forEach(System.out::println);
     }
 }

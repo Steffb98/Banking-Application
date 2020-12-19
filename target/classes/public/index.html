@@ -3,60 +3,22 @@
 <head>
 	<meta charset= "utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/index.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style/index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
+  <form id ="loginForm" action="/perform_login" method="post">
     <h1>Login</h1>
 
-    <label for="email"><b>Email</b></label>
-    <input type="text" placeholder="Enter email" name="email" id="email" required>
+    <label for="username"><b>Email</b></label>
+    <input type="text" placeholder="Enter username" name="username" id="username" required>
 
     <label for="password"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="password" id="password" required>
 
-    <input type="button" id="login_submit" class="btn" value="Login">
-  </div>
+    <input type="submit" id="loginSubmit" value="Login">
+  </form>
 
 </body>
 </html>
-
-<script type="text/javascript">
-  $(document).ready(function(){
-		sessionStorage.clear();
-    $("#login_submit").click(function(){
-      var email = $('#email').val().trim();
-      var password = $('#password').val().trim();
-        $.ajax({
-          url:'user/login',
-          type:'get',
-					data:{email:email,password:password},
-          success:function(response){
-            var msg = "";
-						sessionStorage.setItem('loggedInUser',JSON.stringify(response));
-            checkUser(response);
-            $("#message").html(msg);
-          },
-          error: function(error){
-              alert("Wrong email and password combination");
-          }
-        });
-    });
-  });
-
-	function checkUser(User)
-	{
-		if (User.isactive == false){
-			alert("This user has been deactivated, please contact customer service.");
-			location.reload();
-		}
-		else if(User.typeofuser == "customer"){
-			window.location = "home.html";
-		}
-		else if (User.typeofuser == "employee") {
-			window.location = "employeehome.html";
-		}
-	}
-</script>

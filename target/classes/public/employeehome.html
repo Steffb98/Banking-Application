@@ -61,18 +61,38 @@
 </html>
 
 <script type="text/javascript">
-	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-  if(loggedInUser == null){
-    window.location = "index.html";
-  } else if (loggedInUser.typeofuser == "customer"){
-    window.location = "home.html";
-  }
-	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-  if(loggedInUser.typeofuser == "employee"){
-		var html =  `<nav">
+    var user;
+    $(document).ready(function () {
+
+      user = GetLoggedInUser();
+      sessionStorage.setItem('loggedInUser',JSON.stringify(user));
+
+      if(user.typeofuser == "employee"){
+        var html =  `<nav">
 										<a href="home.html">Home</a> |
 										<a href="employeehome.html">Employee Home</a>
 								</nav>`
-		$("#navbar").append(html);
-	}
+        $("#navbar").append(html);
+      }
+      alert(loggedInUser.firstname)
+      $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+    });
+
+    function GetLoggedInUser() {
+      var user = "";
+      $.ajax({
+        url: 'user/loggedin',
+        type: "GET",
+        async: false,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+          user = data;
+        }
+      });
+      return user;
+    }
+
+
+
 </script>
