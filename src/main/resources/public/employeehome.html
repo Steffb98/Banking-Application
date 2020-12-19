@@ -63,7 +63,7 @@
 <script type="text/javascript">
     var user;
     $(document).ready(function () {
-      //hier komt een gedeelte om de tabjes alleen zichtbaar te maken als je admin bent
+
       user = GetLoggedInUser();
       sessionStorage.setItem('loggedInUser',JSON.stringify(user));
 
@@ -74,7 +74,8 @@
 								</nav>`
         $("#navbar").append(html);
       }
-      alert(user.firstname)
+      alert(loggedInUser.firstname)
+      //$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
     });
 
     function GetLoggedInUser() {
@@ -92,6 +93,6 @@
       return user;
     }
 
-	//$('#name').text(user.firstname + " " + user.lastname);
+
 
 </script>
