@@ -46,11 +46,11 @@ public class UserService {
         return user;
     }
 
-    public void createUser(User user) throws AlreadyExistsException, BadInputException {
+    public User createUser(User user) throws AlreadyExistsException, BadInputException {
         if(userRepository.findByUsername(user.getUsername()) != null){
             throw new AlreadyExistsException(409, "Username already exists");
         }
-        userRepository.save(new User(user.getFirstname(), user.getLastname(), user.getUsername(), user.getPassword(), TypeofuserEnum.CUSTOMER));
+        return userRepository.save(new User(user.getFirstname(), user.getLastname(), user.getUsername(), user.getPassword(), TypeofuserEnum.CUSTOMER));
     }
 
     public void toggleUserStatus(Long userId) throws NotFoundException {

@@ -63,7 +63,7 @@ body
   height: auto;
 }
 
-input[type=text], input[type=password], input[type=email]
+input[type=text], input[type=password]
 {
   width: 92%;
   padding: 15px;

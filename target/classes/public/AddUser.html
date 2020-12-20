@@ -120,6 +120,7 @@
   function CreateSavingAccount(account){
     account["typeofaccount"] = "saving";
     account = JSON.stringify(account);
+    alert(account + "savingaccount");
     var succes = false;
     $.ajax({
       url:'account',
@@ -127,11 +128,11 @@
       async:false,
       contentType: "application/json",
       data:account,
-      dataType: "json",
       success:function(response){
         succes = true;
       },
       error: function(error){
+        alert(error.responseText + "saving");
         succes = false;
       }
     });
@@ -141,6 +142,7 @@
   function CreateDepositAccount(account){
     account["typeofaccount"] = "deposit";
     account = JSON.stringify(account);
+    alert(account + "depositaccount");
     var succes = false;
     $.ajax({
       url:'account',
@@ -148,11 +150,11 @@
       async:false,
       contentType: "application/json",
       data:account,
-      dataType: "json",
       success:function(response){
         succes = true;
       },
       error: function(error){
+        alert(error.responseText + "deposit");
         succes = false;
       }
     });

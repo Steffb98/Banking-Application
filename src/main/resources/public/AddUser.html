@@ -127,11 +127,11 @@
       async:false,
       contentType: "application/json",
       data:account,
-      dataType: "json",
       success:function(response){
         succes = true;
       },
       error: function(error){
+        alert(error.responseText);
         succes = false;
       }
     });
@@ -148,11 +148,11 @@
       async:false,
       contentType: "application/json",
       data:account,
-      dataType: "json",
       success:function(response){
         succes = true;
       },
       error: function(error){
+        alert(error.responseText);
         succes = false;
       }
     });

@@ -50,10 +50,10 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
         try {
-            userService.createUser(body);
+            User user = userService.createUser(body);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("User has been created");
+                    .body(user);
         }catch(AlreadyExistsException e){
             return ResponseEntity
                     .status(HttpStatus.FOUND)
