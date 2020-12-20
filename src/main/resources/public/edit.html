@@ -38,16 +38,16 @@
 
     <div id="email_div" class="box">
       <div id="edit" class="block">
-        <h3>Change your Email</h3>
+        <h3>Change your Username</h3>
         <hr>
 
-        <label for="email"><b>Email</b></label>
-        <input type="text" placeholder="Enter a new email" id="email"  required>
+        <label for="username"><b>Username</b></label>
+        <input type="text" placeholder="Enter a new username" id="username"  required>
 
-        <label for="c_email"><b>Confirm email</b></label>
-        <input type="text" placeholder="Repeat new email" id="c_email" required>
+        <label for="c_username"><b>Confirm Username</b></label>
+        <input type="text" placeholder="Repeat new username" id="c_username" required>
 
-        <input type="button" name= "change_email" class="btn" id="change_email" value="Change email">
+        <input type="button" name= "change_username" class="btn" id="change_username" value="Change Username">
       </div>
     </div>
 
@@ -60,67 +60,42 @@
 </html>
 <script>
   var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-  if(loggedInUser.isactive == "false"){
-    window.location = "index.html";
-  }
-  if(loggedInUser.typeofuser == "employee" ){
-    document.getElementById('email_div').style.visibility = 'hidden';
-    document.getElementById('v1').style.visibility = 'hidden';
-    document.getElementById('password_div').style.marginLeft = '27.5%';
-  } else {
-    document.getElementById('email_div').style.visibility = 'visible';
-    document.getElementById('v1').style.visibility = 'visible';
-    document.getElementById('password_div').style.marginLeft = '0%';
+  if (loggedInUser.typeofuser !== "EMPLOYEE"){
+      window.location = "home.html";
   }
   $(document).ready(function(){
-    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-    var userId = loggedInUser.id;
-    var password = loggedInUser.password;
-    var email = loggedInUser.email;
+    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
     $("#change_pw").click(function(){
-      if($('#pw').val() == password){
-        alert("New password can't be the same as the old password");
-        window.location = "edit.html";
-      }
-      else if($('#pw').val() === $('#cpw').val()) {
-        password = $('#pw').val().trim();
-      }
-      $.ajax({
-        url:'users?id='+userId+'&email='+email+'&password='+password,
-        type:'PUT',
-        contentType: "application/json",
-        dataType: "json",
-				//data:{id:userId,email:email,password:password},
-        success:function(response){
-          window.location = "home.html";
-        },
-        error: function(error){
-					alert("Invalid user");
-        }
-      });
+      updateUser()
     })
-    $("#change_email").click(function(){
-      if($('#email').val() == email){
-        alert("New email can't be the same as the old email")
-        window.location = "edit.html";
-      }
-      else if($('#email').val() === $('#c_email').val()) {
-        email = $('#email').val().trim();
-      }
-      $.ajax({
-        url:'users?id='+userId+'&email='+email+'&password='+password,
-        type:'PUT',
-        contentType: "application/json",
-        dataType: "json",
-        success:function(response){
-          window.location = "home.html";
-        },
-        error: function(error){
-					alert("Invalid user");
-        }
-      });
+    $("#change_username").click(function(){
+      updateUser()
     })
     
   });
+
+  function updateUser()
+  {
+    var user = {};
+    user["firstname"] = loggedInUser.firstname;
+    user["lastname"] = loggedInUser.lastname;
+    user["username"] = $('#username').val();
+    user["password"] = $('#pw').val();
+    user = JSON.stringify(user);
+
+    $.ajax({
+      url: 'user/' + loggedInUser.userId,
+      type: 'PUT',
+      contentType: "application/json",
+      data: user,
+      success: function (response) {
+        alert(response.responseText);
+        location.reload();
+      },
+      error: function (error) {
+        alert(error.responseText);
+      }
+    });
+  }
   
 </script>

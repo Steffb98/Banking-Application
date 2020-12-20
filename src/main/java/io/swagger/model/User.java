@@ -24,7 +24,7 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"typeofuser", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired"})
+@JsonIgnoreProperties({"authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired"})
 public class User implements UserDetails {
   @Id
   @JsonProperty("userId")
@@ -153,7 +153,7 @@ public class User implements UserDetails {
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    this.password = new BCryptPasswordEncoder().encode(password);
   }
 
   public void setEnabled(Boolean enabled) {
@@ -194,4 +194,5 @@ public class User implements UserDetails {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
 }

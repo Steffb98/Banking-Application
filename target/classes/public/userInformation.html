@@ -26,8 +26,8 @@
 				<hr>
 				<p id="userFirstName"></p>
 				<p id="userLastName"></p>
-				<p id="userEmail"></p>
-				<p id="userPassword"></p>
+				<p id="userName"></p>
+				<p id="userEnabled"></p>
       </div>
 
     </div>
@@ -63,58 +63,69 @@
 </html>
 <script type="text/javascript">
 	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-	if(loggedInUser == null){
-    	window.location = "index.html";
-  	} else if (loggedInUser.typeofuser == "customer"){
-    	window.location = "home.html";
-  	}
-	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+    if (loggedInUser.typeofuser !== "EMPLOYEE"){
+        window.location = "home.html";
+    }
+    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
 
 	var searchedUser = JSON.parse(sessionStorage.getItem("searchedUser"));
-	$('#userFirstName').text("First name: "+searchedUser.firstname);
-	$('#nameUser').text(searchedUser.firstname + " "+searchedUser.lastname);
-	$('#nameUserSaving').text(searchedUser.firstname + " "+searchedUser.lastname);
-	$('#userLastName').text("Last name: "+searchedUser.lastname);
-	$('#userEmail').text("Email: "+searchedUser.email);
-	checkUserToggle();
+	var user;
 
-	$(document).ready(function(){
-				$.ajax({
-					url:'account/listaccount',
-					type:'get',
-					data:{userId:searchedUser.id},
-					contentType: "application/json",
-					dataType:"json",
-					success:function(response){
-						$.each(response,function(index){
-							fillIban(response[index]);
-						});
-					},
-					error: function(error){
-						alert("There was an error try again");
-					}
-				});
-	});
 
-	$(document).ready(function(){
-		$("#userToggle").click(function(){
-				$.ajax({
-					url:'users/'+searchedUser.id,
-					type:'put',
-					contentType: "application/json",
-					dataType:"json",
-					success:function(response){
-						alert("User status has been changed");
-						sessionStorage.setItem('searchedUser',JSON.stringify(response));
-						location.reload()
-					},
-					error: function(error){
-						alert("There was an error try again");
-					}
-				});
-		});
-	});
+    $(document).ready(function () {
+        $.ajax({
+            url: 'account/listaccount/' + searchedUser.userId,
+            type: 'get',
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                $.each(response, function (index) {
+                    fillIban(response[index]);
+                });
+            },
+            error: function (error) {
+                alert("There was an error try again");
+            }
+        });
 
+        $.ajax({
+            url: 'user/search/' + searchedUser.userId,
+            type: 'GET',
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                user = response;
+                fillData(user);
+            }
+        });
+    });
+
+    $("#userToggle").click(function () {
+        $.ajax({
+            url: 'user/activity/' + searchedUser.userId,
+            type: 'put',
+            contentType: "application/json",
+            success: function (response) {
+                alert("User status has been changed");
+                location.reload()
+            },
+            error: function (error) {
+                alert("There was an error try again");
+            }
+        });
+    });
+
+    function fillData(user)
+    {
+        $('#userFirstName').text("First name: "+user.firstname);
+        $('#nameUser').text(user.firstname + " "+user.lastname);
+        $('#nameUserSaving').text(user.firstname + " "+user.lastname);
+        $('#userLastName').text("Last name: "+user.lastname);
+        $('#userName').text("UserName: "+user.username);
+        $('#userEnabled').text("Active: "+user.enabled);
+        checkUserToggle(user);
+    }
 	function fillIban(account)
 	{
 		if(account.typeofaccount == "deposit"){
@@ -128,47 +139,47 @@
 		checkAccountToggle(account);
 	}
 
-	$("#accountToggle").click(function(){
-		var iban = $('#depositIban').text().trim();
-		$.ajax({
-						url:'account/'+iban,
-						type:'put',
-						contentType: "application/json",
-						success:function(response){
-							alert("Account status has been changed");
-							location.reload();
-						},
-						error: function(error){
-							alert("There has been an error");
-						}
-					});
-	});
+    $("#accountToggle").click(function () {
+        var iban = $('#depositIban').text().trim();
+        $.ajax({
+            url: 'account/activity/' + iban,
+            type: 'put',
+            contentType: "application/json",
+            success: function (response) {
+                alert("Account status has been changed");
+                location.reload();
+            },
+            error: function (error) {
+                alert("There has been an error");
+            }
+        });
+    });
 
-	$("#accountToggle1").click(function(){
-		var iban = $('#savingIban').text().trim();
-		$.ajax({
-						url:'account/'+iban,
-						type:'put',
-						contentType: "application/json",
-						success:function(response){
-							alert("Account status has been changed");
-							location.reload();
-						},
-						error: function(error){
-							alert("There has been an error");
-						}
-					});
-	});
+    $("#accountToggle1").click(function () {
+        var iban = $('#savingIban').text().trim();
+        $.ajax({
+            url: 'account/activity/' + iban,
+            type: 'put',
+            contentType: "application/json",
+            success: function (response) {
+                alert("Account status has been changed");
+                location.reload();
+            },
+            error: function (error) {
+                alert("There has been an error");
+            }
+        });
+    });
 
-	function checkUserToggle()
+	function checkUserToggle(user)
 	{
-		if(searchedUser.isactive == true)
+		if(user.enabled === true)
 		{
 			$('#userToggle').text("Deactivate user");
 			var user = document.getElementById("userToggle");
 			user.style.backgroundColor = "red";
 		}
-		if(searchedUser.isactive == false)
+		if(user.enabled === false)
 		{
 			$('#userToggle').text("Activate user");
 			var user = document.getElementById("userToggle");
@@ -177,8 +188,8 @@
 	}
 	function checkAccountToggle(account)
 	{
-		if(account.typeofaccount == "deposit"){
-			if(account.isactive == true){
+		if(account.typeofaccount === "deposit"){
+			if(account.isactive === true){
 				$('#accountToggle').text("Deactivate account");
 				var depositAccount = document.getElementById("accountToggle");
 				depositAccount.style.backgroundColor = "red";

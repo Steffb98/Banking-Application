@@ -31,8 +31,8 @@
         <label for="lastname"><b>Last Name</b></label>
         <input type="text" placeholder="Eriksson" id="lastname" required>
 
-        <label for="email"><b>Email</b></label>
-        <input type="email" placeholder="leiferiksson@gmail.com" id="email" required>
+        <label for="username"><b>Username</b></label>
+        <input type="text" placeholder="Dennis" id="username" required>
 
         <label for="pwd"><b>Password</b></label>
         <input type="password" placeholder="Password" id="pwd" required>
@@ -54,83 +54,60 @@
 
 <script type="text/javascript">
 	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
+    if (loggedInUser.typeofuser !== "EMPLOYEE") {
+      window.location = "home.html";
+    }
 
-  if (loggedInUser.typeofuser === "employee"){
-	   $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-  }
-  else{
-     window.location = "home.html";
-  }
-
-  $(document).ready(function(){
-    $("#add_user").click(function(){
-      var firstName = $('#firstname').val().trim();
-      var lastName = $('#lastname').val().trim();
-      var eMail = $('#email').val().trim();
-      var pw1 = $('#pwd').val().trim();
-      var pw2 = $('#pswConfirm').val().trim();
-      if (firstName != "" && lastName != "" && eMail != "" && pw1 != "" && pw2 != "") {
-        if(ValidateEmail(eMail)){
+    $(document).ready(function () {
+      $("#add_user").click(function () {
+        var firstName = $('#firstname').val().trim();
+        var lastName = $('#lastname').val().trim();
+        var username = $('#username').val().trim();
+        var pw1 = $('#pwd').val().trim();
+        var pw2 = $('#pswConfirm').val().trim();
+        if (firstName != "" && lastName != "" && username != "" && pw1 != "" && pw2 != "") {
           if (pw1 == pw2) {
             if (ValidatePassword(pw1)) {
               var user = {}
-              user["id"] = 0;
               user["firstname"] = firstName;
               user["lastname"] = lastName;
-              user["email"] = eMail;
+              user["username"] = username;
               user["password"] = pw1;
-              user["isactive"] = true;
-              user["typeofuser"] = "customer";
               user = JSON.stringify(user);
               $.ajax({
-                url:'users',
-                type:'POST',
+                url: 'user',
+                type: 'POST',
                 contentType: "application/json",
-      					data:user,
-                dataType: "json",
-                success:function(response){
-                  var responseUser = response;
-                  succes = CreateAccounts(responseUser.id);
-                  if (succes == true){
+                data: user,
+                success: function (response) {
+                  succes = CreateAccounts(response.userId);
+                  if (succes == true) {
                     alert("The new user has been succesfully created!");
-                    window.location = "employeehome.html";
-                  }else{
+                    location.reload();
+                  } else {
                     alert("something went wrong while trying to create the accounts for the new user");
                   }
                 },
-                error: function(error){
-      						alert("This email already exists");
+                error: function (error) {
+                  alert(error.responseText);
                 }
               });
+            } else {
+              alert("Password must exist of 8-15 characters, at least 1 lower- and uppercase letter, 1 number and 1 special character");
             }
-            else{
-              alert("Password must exist of 8-15 characters, atleast 1 lower- and uppercase letter, 1 number and 1 special character");
-            }
+          } else {
+            alert("Passwords do not match");
           }
-          else{
-            alert("Passwords do not match")
-          }
+        } else {
+          alert("Please fill in all fields");
         }
-        else{
-          alert("Please provide a correct email address");
-        }
-      }else{
-        alert("Please fill in all fields");
-      }
+      });
     });
-  });
 
   function CreateAccounts(userid){
     var account = {}
-    account["minimumbalance"] = -100;
-    account["iban"] = "";
-    account["balance"] = 0;
-    account["typeofaccount"] = "";
-    account["isactive"] = true;
     account["userid"] = userid;
-    account["daylimit"] = 5;
-    account["transactionlimit"] = 20000;
-    account["numberoftransactions"] = 0;
     var succes = true;
     succes = CreateSavingAccount(account);
     if(succes == false){
@@ -182,15 +159,6 @@
     return succes;
   }
 
-  function ValidateEmail(email){
-    var filter=/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
-    if (filter.test(email)) {
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
 
   function ValidatePassword(pw){
     var decimal=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;

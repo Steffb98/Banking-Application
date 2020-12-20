@@ -40,7 +40,6 @@ public class TransactionApiController implements TransactionApi {
 
     public ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) throws NotFoundException ,BadInputException, LimitReachedException {
         try {
-            System.out.println("test");
             transactionService.addTransaction(body);
             return ResponseEntity
                     .status(HttpStatus.CREATED)

@@ -46,13 +46,15 @@ public class MyApplicationRunner implements ApplicationRunner {
         userRepository.findAll().forEach(System.out::println);
 
         List<Account> accounts = Arrays.asList(
-                new Account("NL01INHO0000000001", Account.TypeofaccountEnum.BANK, users.get(0).getuserId()),
+                new Account("NL01INHO0000000001", Account.TypeofaccountEnum.BANK, 100000L),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(0).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(0).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(1).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(1).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(2).getuserId()),
-                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(2).getuserId())
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(2).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(3).getuserId()),
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(3).getuserId())
         );
 
         accounts.forEach(accountRepository::save);

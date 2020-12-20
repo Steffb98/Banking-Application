@@ -62,20 +62,22 @@
 
 <script type="text/javascript">
     var user;
+    var loggedInUser;
     $(document).ready(function () {
-
       user = GetLoggedInUser();
-      sessionStorage.setItem('loggedInUser',JSON.stringify(user));
-
-      if(user.typeofuser == "employee"){
-        var html =  `<nav">
-										<a href="home.html">Home</a> |
-										<a href="employeehome.html">Employee Home</a>
-								</nav>`
+      loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+      if (loggedInUser.typeofuser === "EMPLOYEE") {
+        var html = `<nav>
+						<a href="home.html">Home</a> |
+						<a href="employeehome.html">Employee Home</a>
+					</nav>`
         $("#navbar").append(html);
       }
-      alert(loggedInUser.firstname)
-      //$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+      else{
+        window.location = "home.html";
+     }
+
+      $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
     });
 
     function GetLoggedInUser() {
@@ -87,6 +89,7 @@
         contentType: "application/json",
         dataType: "json",
         success: function (data) {
+          sessionStorage.setItem('loggedInUser',JSON.stringify(data));
           user = data;
         }
       });

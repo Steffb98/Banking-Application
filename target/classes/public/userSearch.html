@@ -20,7 +20,7 @@
     <hr>
 
     <div id="searchBalk">
-        <input type="text" class="search" id="searchName" placeholder="Search with name">
+        <input type="text" class="search" id="searchNumber" placeholder="Search with number">
         <input type="submit" class="submit" id="search" value="Search">
     </div>
 
@@ -36,55 +36,50 @@
 </html>
 <script type="text/javascript">
 	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-	if(loggedInUser == null){
-    	window.location = "index.html";
-  	} else if (loggedInUser.typeofuser == "customer"){
-    	window.location = "home.html";
-  	}
-	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+    if (loggedInUser.typeofuser !== "EMPLOYEE"){
+        window.location = "home.html";
+    }
+    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
 	
   $(document).ready(function(){
 
     $("#search").click(function(){
-      var name = $('#searchName').val().trim();
-				$.ajax({
-          url:'users/search',
-          type:'get',
-					data:{name:name},
-					contentType: "application/json",
-					dataType:"json",
-          success:function(response){
-            var msg = "";
-						$.each(response,function(index){
-							fillData(response[index]);
-						});
-          },
-          error: function(error){
-						alert("No user found with that name");
-          }
+        var searchNumber = $('#searchNumber').val().trim();
+        $.ajax({
+            url: 'user/search/' + searchNumber,
+            type: 'GET',
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                fillData(response);
+            },
+            error: function (error) {
+                alert("No user found with that number");
+            }
         });
     });
   });
 
-	function fillData(Users)
+	function fillData(User)
 	{
-		if(Users.id == 53){
-			alert("Forbidden User");
-		} else{
+        if (User.userId == 100000) {
+            alert("Forbidden User");
+        } else {
 
-		var html =  `<div class="block">
-										<h3>`	+ Users.firstname + " " + Users.lastname+`</h3>
-										<hr>
-										<p>`	+ Users.email +`</p>
-										<p>`	+ Users.typeofuser +`</p>
-										<button id="`	+ Users.id +`" class="btn">Check user information</button>
-								</div>`
-		$("#info").append(html);
-		}
+            var html = `<div class="block">
+							<h3>` + "Name: "+ User.firstname + " " + User.lastname + `</h3>
+							<hr>
+							<p>` + "Username: "+ User.username + `</p>
+                            <p>` + "Active: "+ User.enabled + `</p>
+							<button id="` + User.userId + `" class="btn">Check user information</button>
+						</div>`
+            $("#info").html(html);
+        }
 
-		document.getElementById(Users.id).addEventListener("click",function(){
-				sessionStorage.setItem('searchedUser',JSON.stringify(Users));
-				window.location = "userInformation.html";
-		});
+        document.getElementById(User.userId).addEventListener("click", function () {
+            sessionStorage.setItem('searchedUser', JSON.stringify(User));
+            window.location = "userInformation.html";
+        });
 	}
 </script>
