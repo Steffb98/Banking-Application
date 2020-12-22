@@ -67,8 +67,10 @@ public class UserService {
         }
     }
 
-    public void updateUser(Long userId, User body) throws NotFoundException {
+    public void updateUser(Long userId, User body) throws NotFoundException, NotAuthorizedException {
         User user = userRepository.findUserByUserId(userId);
+        authorizationService.checkUserAuthorization(userId);
+
         if(user == null) {
             throw new NotFoundException(404, "User not found");
         }

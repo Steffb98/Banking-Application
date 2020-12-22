@@ -81,13 +81,8 @@
                 contentType: "application/json",
                 data: user,
                 success: function (response) {
-                  succes = CreateAccounts(response.userId);
-                  if (succes == true) {
-                    alert("The new user has been succesfully created!");
-                    location.reload();
-                  } else {
-                    alert("something went wrong while trying to create the accounts for the new user");
-                  }
+                  alert("The new user has been succesfully created!");
+                  location.reload();
                 },
                 error: function (error) {
                   alert(error.responseText);
@@ -104,61 +99,6 @@
         }
       });
     });
-
-  function CreateAccounts(userid){
-    var account = {}
-    account["userid"] = userid;
-    var succes = true;
-    succes = CreateSavingAccount(account);
-    if(succes == false){
-      return succes;
-    }
-    succes = CreateDepositAccount(account);
-    return succes;
-  }
-
-  function CreateSavingAccount(account){
-    account["typeofaccount"] = "saving";
-    account = JSON.stringify(account);
-    var succes = false;
-    $.ajax({
-      url:'account',
-      type:'POST',
-      async:false,
-      contentType: "application/json",
-      data:account,
-      success:function(response){
-        succes = true;
-      },
-      error: function(error){
-        alert(error.responseText);
-        succes = false;
-      }
-    });
-    return succes;
-  }
-
-  function CreateDepositAccount(account){
-    account["typeofaccount"] = "deposit";
-    account = JSON.stringify(account);
-    var succes = false;
-    $.ajax({
-      url:'account',
-      type:'POST',
-      async:false,
-      contentType: "application/json",
-      data:account,
-      success:function(response){
-        succes = true;
-      },
-      error: function(error){
-        alert(error.responseText);
-        succes = false;
-      }
-    });
-    return succes;
-  }
-
 
   function ValidatePassword(pw){
     var decimal=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;

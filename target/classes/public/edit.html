@@ -24,6 +24,9 @@
         <h3>Change your password</h3>
         <hr>
 
+        <label for="c_pwCheck"><b>Enter old password</b></label>
+        <input type="password" placeholder="Enter old password" id="c_pwCheck" required>
+
         <label for="pw"><b>Password</b></label>
         <input type="password" placeholder="Enter a new Password" id="pw"  required>
 
@@ -47,6 +50,9 @@
         <label for="c_username"><b>Confirm Username</b></label>
         <input type="text" placeholder="Repeat new username" id="c_username" required>
 
+        <label for="c_username_pwcheck"><b>Enter password</b></label>
+        <input type="password" placeholder="Enter password" id="c_username_pwcheck" required>
+
         <input type="button" name= "change_username" class="btn" id="change_username" value="Change Username">
       </div>
     </div>
@@ -59,24 +65,71 @@
 </body>
 </html>
 <script>
+
+
   var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-  if (loggedInUser.typeofuser !== "EMPLOYEE"){
-      window.location = "home.html";
-  }
   $(document).ready(function(){
     $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
     $("#change_pw").click(function(){
-      updateUser()
+      updatePassword()
     })
     $("#change_username").click(function(){
-      updateUser()
+      updateUserName();
     })
     
   });
 
-  function updateUser()
+  function updateUserName()
+
   {
+    // information still updates but always shows this alert..
+    // This happens because the password is compared to the hashed password of "loggedInUser"
+    if ($('#c_username_pwcheck').val() !== loggedInUser.password)
+    {
+      alert("Invalid password entered");
+      location.reload();
+    }
+
+
     var user = {};
+    user["firstname"] = loggedInUser.firstname;
+    user["lastname"] = loggedInUser.lastname;
+    user["username"] = $('#username').val();
+    user["password"] = $('#c_username_pwcheck').val();
+    user = JSON.stringify(user);
+
+    $.ajax({
+      url: 'user/' + loggedInUser.userId,
+      type: 'PUT',
+      contentType: "application/json",
+      data: user,
+      success: function (response) {
+        alert(response.responseText);
+        location.reload();
+      },
+      error: function (error) {
+        alert(error.responseText);
+      }
+    });
+  }
+
+  function updatePassword()
+  {
+    // information still updates but always shows this alert..
+    // This happens because the password is compared to the hashed password of "loggedInUser"
+    // if ($('#c_pwCheck').val() !== loggedInUser.password)
+    // {
+    //   alert("Old password is invalid");
+    //   location.reload();
+    // }
+
+    if ($('#pw').val() !== $('#cpw').val())
+    {
+      alert("Passwords do not match!");
+      location.reload();
+    }
+
+    var user = {}
     user["firstname"] = loggedInUser.firstname;
     user["lastname"] = loggedInUser.lastname;
     user["username"] = $('#username').val();
@@ -97,5 +150,7 @@
       }
     });
   }
+
+
   
 </script>
