@@ -38,7 +38,8 @@ public class MyApplicationRunner implements ApplicationRunner {
                 new User("Kim", "Gelder", "kim", "test", TypeofuserEnum.CUSTOMER),
                 new User("Cheyen", "Alberts", "cheyen", "test", TypeofuserEnum.CUSTOMER),
                 new User("Sam", "Kuik", "sam", "test", TypeofuserEnum.CUSTOMER),
-                new User("admin", "emplyee", "test", "test", TypeofuserEnum.EMPLOYEE)
+                new User("admin", "emplyee", "test", "test", TypeofuserEnum.EMPLOYEE),
+                new User("Unit", "Testing", "jUnit", "test", TypeofuserEnum.EMPLOYEE)// User For Testing
         );
 
         users.forEach(userRepository::save);
@@ -52,7 +53,9 @@ public class MyApplicationRunner implements ApplicationRunner {
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(1).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(1).getuserId()),
                 new Account(accountService.generateIban(), Account.TypeofaccountEnum.SAVING, users.get(2).getuserId()),
-                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(2).getuserId())
+                new Account(accountService.generateIban(), Account.TypeofaccountEnum.DEPOSIT, users.get(2).getuserId()),
+                new Account("NL99INHO9999999999", Account.TypeofaccountEnum.SAVING, users.get(4).getuserId()), // Account for testing
+                new Account("NL09INHO0999999999", Account.TypeofaccountEnum.DEPOSIT, users.get(4).getuserId()) // Account for testing
         );
 
         accounts.forEach(accountRepository::save);

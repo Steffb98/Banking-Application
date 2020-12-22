@@ -32,22 +32,29 @@ public class TransactionTest {
     @Test
     public void settingEmptySenderShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> transaction.setSender(null));
+                () -> transaction.setSender(""));
         assertEquals("Sender cannot be empty", exception.getMessage());
     }
 
     @Test
     public void settingEmptyReceiverShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> transaction.setReceiver(null));
+                () -> transaction.setReceiver(""));
         assertEquals("Receiver cannot be empty", exception.getMessage());
     }
 
     @Test
-    public void settingEmptyByShouldThrowException() {
+    public void settingEmptyPerformingUserShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> transaction.setPerforminguser(null));
-        assertEquals("By cannot be empty", exception.getMessage());
+        assertEquals("Performing user cannot be empty", exception.getMessage());
+    }
+
+    @Test
+    public void settingEmptyReceivingUserShouldThrowException() {
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> transaction.setReceivinguser(null));
+        assertEquals("Receiving user cannot be empty", exception.getMessage());
     }
 
     @Test
