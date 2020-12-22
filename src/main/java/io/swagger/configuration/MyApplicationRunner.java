@@ -10,6 +10,7 @@ import io.swagger.repository.UserRepository;
 import io.swagger.service.AccountService;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -35,10 +36,10 @@ public class MyApplicationRunner implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) throws Exception {
 
         List<User> users = Arrays.asList(
-                new User("Kim", "Gelder", "kim", "test", TypeofuserEnum.CUSTOMER),
-                new User("Cheyen", "Alberts", "cheyen", "test", TypeofuserEnum.CUSTOMER),
-                new User("Sam", "Kuik", "sam", "test", TypeofuserEnum.CUSTOMER),
-                new User("admin", "emplyee", "test", "test", TypeofuserEnum.EMPLOYEE)
+                new User("Kim", "Gelder", "kim", new BCryptPasswordEncoder().encode("test"), TypeofuserEnum.CUSTOMER),
+                new User("Cheyen", "Alberts", "cheyen", new BCryptPasswordEncoder().encode("test"), TypeofuserEnum.CUSTOMER),
+                new User("Sam", "Kuik", "sam", new BCryptPasswordEncoder().encode("test"), TypeofuserEnum.CUSTOMER),
+                new User("admin", "emplyee", "test", new BCryptPasswordEncoder().encode("test"), TypeofuserEnum.EMPLOYEE)
         );
 
         users.forEach(userRepository::save);

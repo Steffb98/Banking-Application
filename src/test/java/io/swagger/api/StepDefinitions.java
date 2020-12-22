@@ -2,25 +2,17 @@ package io.swagger.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.java.Before;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.messages.internal.com.google.gson.Gson;
-import io.swagger.model.TypeofuserEnum;
-import io.swagger.repository.AccountRepository;
-import io.swagger.repository.UserRepository;
 import io.swagger.model.Account;
 import io.swagger.model.Transaction;
+import io.swagger.model.TypeofuserEnum;
 import io.swagger.model.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -28,14 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Random;
-
-import org.threeten.bp.OffsetDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
 public class StepDefinitions {
 

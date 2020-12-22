@@ -51,7 +51,7 @@ public class User implements UserDetails {
     this.firstname = firstname;
     this.lastname = lastname;
     this.username = username;
-    this.password = new BCryptPasswordEncoder().encode(password);
+    this.password = password;
     this.enabled = true;
     this.typeofuser = typeOfUser;
   }
@@ -195,4 +195,7 @@ public class User implements UserDetails {
     return o.toString().replace("\n", "\n    ");
   }
 
+  public void setEncryptedPassword(String password){
+    this.password = password;
+  }
 }

@@ -2,8 +2,8 @@ package io.swagger.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.exception.AlreadyExistsException;
-import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.BadInputException;
+import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.User;
 import io.swagger.service.UserService;
@@ -50,10 +50,10 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
         try {
-            User user = userService.createUser(body);
+            userService.createUser(body);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(user);
+                    .body("user has been created");
         }catch(AlreadyExistsException e){
             return ResponseEntity
                     .status(HttpStatus.FOUND)
