@@ -74,15 +74,6 @@ public class UserService {
         if(user == null) {
             throw new NotFoundException(404, "User not found");
         }
-        if (!body.getFirstname().isEmpty()) {
-            user.setFirstname(body.getFirstname());
-        }
-        if (!body.getLastname().isEmpty()) {
-            user.setLastname(body.getLastname());
-        }
-        if (!body.getUsername().isEmpty()) {
-            user.setUsername(body.getUsername());
-        }
         if (!body.getPassword().isEmpty()) {
             user.setEncryptedPassword(body.getPassword());
         }

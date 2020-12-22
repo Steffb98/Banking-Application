@@ -79,7 +79,7 @@ public interface UserApi {
     @RequestMapping(value = "/user/{userId}",
         consumes = { "application/json" }, 
         method = RequestMethod.PUT)
-    ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId, @Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body);
+    ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId, @Parameter(in = ParameterIn.DEFAULT, description = "Updated user password", required=true, schema=@Schema()) @Valid @RequestBody User body);
 
 }
 
