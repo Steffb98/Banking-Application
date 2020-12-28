@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class MyApplicationRunner implements ApplicationRunner {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final AccountService accountService;
     private final TransactionRepository transactionRepository;

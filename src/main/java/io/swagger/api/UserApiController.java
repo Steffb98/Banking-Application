@@ -42,41 +42,37 @@ public class UserApiController implements UserApi {
         this.userService = userService;
     }
 
-    public ResponseEntity getLoggedInUser(){
+    public ResponseEntity getLoggedInUser() {
         try {
-            return new ResponseEntity<User>(userService.getLoggedInUser(),HttpStatus.OK);
-        }catch (Exception e) {
+            return new ResponseEntity<User>(userService.getLoggedInUser(), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
+    public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema = @Schema()) @Valid @RequestBody User body) {
         try {
             userService.createUser(body);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body("User has been created");
-        }catch(AlreadyExistsException e){
+        } catch (AlreadyExistsException e) {
             return ResponseEntity
                     .status(HttpStatus.FOUND)
                     .body(e.getMessage());
-        }catch(BadInputException e){
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
+    public ResponseEntity getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required = true, schema = @Schema()) @PathVariable("userId") Long userId) {
         try {
             return new ResponseEntity<User>(userService.getUserById(userId), HttpStatus.OK);
         } catch (NotAuthorizedException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
-        }catch(NotFoundException e){
+        } catch (NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
@@ -85,32 +81,36 @@ public class UserApiController implements UserApi {
         }
     }
 
-    public ResponseEntity toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
+    public ResponseEntity toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required = true, schema = @Schema()) @PathVariable("userId") Long userId) {
         try {
             userService.toggleUserStatus(userId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body("User activity has been changed");
-        }catch(NotFoundException e){
+        } catch (NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId, @ApiParam(value = "Updated user password", required=true )  @Valid @RequestParam (value = "password", required = true)String password) {
+    public ResponseEntity updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required = true, schema = @Schema()) @PathVariable("userId") Long userId, @ApiParam(value = "Updated user password", required = true) @Valid @RequestParam(value = "password", required = true) String password) {
         try {
             userService.updateUser(userId, password);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body("User has been updated");
-        }catch(NotFoundException e){
+        } catch (NotAuthorizedException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
+        } catch (NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
-        }catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

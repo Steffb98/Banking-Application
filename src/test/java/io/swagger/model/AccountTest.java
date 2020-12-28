@@ -13,15 +13,17 @@ public class AccountTest {
     private Account account;
 
     @Before
-    public void setup(){
+    public void setup() {
         account = new Account();
     }
 
     @Test
-    public void createUsersShouldNotBeNull(){assertNotNull(account);}
+    public void createUsersShouldNotBeNull() {
+        assertNotNull(account);
+    }
 
     @Test
-    public void settingBalanceBelowAbsolutLimitShouldThrowException(){
+    public void settingBalanceBelowAbsolutLimitShouldThrowException() {
         account.setAbsolutlimit(new BigDecimal(-10.00));
         account.setBalance(new BigDecimal(10));
         Exception exception = assertThrows(IllegalArgumentException.class,
@@ -30,28 +32,28 @@ public class AccountTest {
     }
 
     @Test
-    public void settingAbsolutLimitAboveZeroShouldThrowException(){
+    public void settingAbsolutLimitAboveZeroShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> account.setAbsolutlimit(new BigDecimal(1)));
         assertEquals("Absolut limit cannot be above zero", exception.getMessage());
     }
 
     @Test
-    public void settingDayLimitBelowZeroShouldThrowException(){
+    public void settingDayLimitBelowZeroShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> account.setDaylimit(-1L));
         assertEquals("DayLimit cannot be below zero", exception.getMessage());
     }
 
     @Test
-    public void settingTransactionLimitBelowZeroShouldThrowException(){
+    public void settingTransactionLimitBelowZeroShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> account.setTransactionlimit(new BigDecimal(-1)));
         assertEquals("TransactionLimit cannot be below zero", exception.getMessage());
     }
 
     @Test
-    public void settingNumberOfTransactionBelowZeroShouldThrowException(){
+    public void settingNumberOfTransactionBelowZeroShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> account.setNumberoftransactions(-1L));
         assertEquals("NumberOfTransaction cannot be below zero", exception.getMessage());

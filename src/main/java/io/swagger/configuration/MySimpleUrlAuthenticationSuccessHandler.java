@@ -18,7 +18,7 @@ import java.util.Map;
 public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -28,19 +28,20 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         handle(request, response, authentication);
         clearAuthenticationAttributes(request);
 
-        }
-        protected void handle(
-                HttpServletRequest request,
-                HttpServletResponse response,
-                Authentication authentication
-        ) throws IOException {
+    }
 
-            String targetUrl = determineTargetUrl(authentication);
-            if (response.isCommitted()) {
-                return;
-            }
-            redirectStrategy.sendRedirect(request, response, targetUrl);
+    protected void handle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) throws IOException {
+
+        String targetUrl = determineTargetUrl(authentication);
+        if (response.isCommitted()) {
+            return;
         }
+        redirectStrategy.sendRedirect(request, response, targetUrl);
+    }
 
     protected String determineTargetUrl(final Authentication authentication) {
 
@@ -51,7 +52,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {
             String authorityName = grantedAuthority.getAuthority();
-            if(roleTargetUrlMap.containsKey(authorityName)) {
+            if (roleTargetUrlMap.containsKey(authorityName)) {
                 return roleTargetUrlMap.get(authorityName);
             }
         }

@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/employeehome.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/employeehome.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
     <a href="employeehome.html">
-		<img src="style/logo.png" class="logo">
-		</a>
+        <img src="style/logo.png" class="logo">
+    </a>
     <a href="/perform_logout">
-      <img src="style/logout.png" class="logout">
+        <img src="style/logout.png" class="logout">
     </a>
 
     <p id="name" for="name"></p>
@@ -21,41 +21,41 @@
     <hr>
 
     <div id="info" class="box">
-      <div class="block">
-        <a href="edit.html">
-          <img src="style/avatar.png" class="png">
-        </a>
-        <h3 id="text">Edit personal information</h3>
-      </div>
+        <div class="block">
+            <a href="edit.html">
+                <img src="style/avatar.png" class="png">
+            </a>
+            <h3 id="text">Edit personal information</h3>
+        </div>
 
-      <div id="secondblock" class="block">
-        <a href="AddUser.html">
-          <img src="style/create_user.png" class="png">
-        </a>
-        <h3 id="text">Create a new user</h3>
-      </div>
+        <div id="secondblock" class="block">
+            <a href="AddUser.html">
+                <img src="style/create_user.png" class="png">
+            </a>
+            <h3 id="text">Create a new user</h3>
+        </div>
 
 
     </div>
     <div class="vl"></div>
     <div id="accounts" class="box">
 
-      <div class="block">
-				<a href="userSearch.html">
-          <img src="style/search.png" class="png">
-        </a>
-        <h3 id="text">Search for a user</h3>
-      </div>
+        <div class="block">
+            <a href="userSearch.html">
+                <img src="style/search.png" class="png">
+            </a>
+            <h3 id="text">Search for a user</h3>
+        </div>
 
-      <div id="secondblock" class="block">
-        <a href="accountSearch.html">
-          <img src="style/search.png" class="png">
-        </a>
-        <h3 id="text">Search for an account</h3>
-      </div>
+        <div id="secondblock" class="block">
+            <a href="accountSearch.html">
+                <img src="style/search.png" class="png">
+            </a>
+            <h3 id="text">Search for an account</h3>
+        </div>
 
     </div>
-  </div>
+</div>
 
 </body>
 </html>
@@ -64,38 +64,36 @@
     var user;
     var loggedInUser;
     $(document).ready(function () {
-      user = GetLoggedInUser();
-      loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-      if (loggedInUser.typeofuser === "EMPLOYEE") {
-        var html = `<nav>
+        user = GetLoggedInUser();
+        loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+        if (loggedInUser.typeofuser === "EMPLOYEE") {
+            var html = `<nav>
 						<a href="home.html">Home</a> |
 						<a href="employeehome.html">Employee Home</a>
 					</nav>`
-        $("#navbar").append(html);
-      }
-      else{
-        window.location = "home.html";
-     }
+            $("#navbar").append(html);
+        } else {
+            window.location = "home.html";
+        }
 
-      $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
+        $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
     });
 
     function GetLoggedInUser() {
-      var user = "";
-      $.ajax({
-        url: 'user/loggedin',
-        type: "GET",
-        async: false,
-        contentType: "application/json",
-        dataType: "json",
-        success: function (data) {
-          sessionStorage.setItem('loggedInUser',JSON.stringify(data));
-          user = data;
-        }
-      });
-      return user;
+        var user = "";
+        $.ajax({
+            url: 'user/loggedin',
+            type: "GET",
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                sessionStorage.setItem('loggedInUser', JSON.stringify(data));
+                user = data;
+            }
+        });
+        return user;
     }
-
 
 
 </script>
