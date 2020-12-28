@@ -165,7 +165,7 @@ public class User implements UserDetails {
     if (password.isEmpty()){
       throw new IllegalArgumentException("Password cannot be empty");
     }
-    this.password = password;
+    this.password = new BCryptPasswordEncoder().encode(password);
   }
 
   public void setEnabled(Boolean enabled) {this.enabled = enabled;}
