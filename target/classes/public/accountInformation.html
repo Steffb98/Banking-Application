@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/home.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/home.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
-		<a href="employeehome.html">
-    	<img src="style/logo.png" class="logo">
-		</a>
-	  <a href="/perform_logout">
-		  <img src="style/logout.png" class="logout">
-	  </a>
+<div class="container">
+    <a href="employeehome.html">
+        <img src="style/logo.png" class="logo">
+    </a>
+    <a href="/perform_logout">
+        <img src="style/logout.png" class="logout">
+    </a>
 
     <p id="name" for="name"></p>
     <hr>
 
     <div id="info" class="box">
-      <div id="infoBlock" class="block">
-        <h3 id="checkingAccHeader"></h3>
-				<hr>
-					<div class="scrollTransaction">
-						<div id = "checkingTransactions">
-						</div>
-					</div>
-					<hr>
-					<p id="totalAmountChecking"><p>
-      </div>
+        <div id="infoBlock" class="block">
+            <h3 id="checkingAccHeader"></h3>
+            <hr>
+            <div class="scrollTransaction">
+                <div id="checkingTransactions">
+                </div>
+            </div>
+            <hr>
+            <p id="totalAmountChecking">
+            <p>
+        </div>
 
     </div>
 
@@ -37,104 +38,98 @@
 
     <div id="accounts" class="box">
 
-	      <div id="infoBlock" class="block">
-	        <h3 id="savingsAccHeader"></h3>
-					<hr>
-					<div class="scrollTransaction">
-						<div id = "savingsTransactions">
-						</div>
-					</div>
-					<hr>
-					<p id="totalAmountSaving"><p>
-	      </div>
+        <div id="infoBlock" class="block">
+            <h3 id="savingsAccHeader"></h3>
+            <hr>
+            <div class="scrollTransaction">
+                <div id="savingsTransactions">
+                </div>
+            </div>
+            <hr>
+            <p id="totalAmountSaving">
+            <p>
+        </div>
 
-  </div>
-	<a href="accountSearch.html">
-			<button id="cancel" class="btn">Cancel</button>
-	</a>
+    </div>
+    <a href="accountSearch.html">
+        <button id="cancel" class="btn">Cancel</button>
+    </a>
 </div>
 
 </body>
 </html>
 
 <script type="text/javascript">
-	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-	if (loggedInUser.typeofuser !== "EMPLOYEE"){
-	    window.location = "home.html";
-	}
-	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
+    var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    if (loggedInUser.typeofuser !== "EMPLOYEE") {
+        window.location = "home.html";
+    }
+    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
 
-	var foundAccount = JSON.parse(sessionStorage.getItem("foundUser"));
-	getAccounts(foundAccount);
+    var foundAccount = JSON.parse(sessionStorage.getItem("foundUser"));
+    getAccounts(foundAccount);
 
-	function getAccounts(account)
-	{
-			$.ajax({
-				url: 'account/listaccount/' + account.userid,
-				type:'GET',
-				async: false,
-				contentType: "application/json",
-				dataType:"json",
-				success:function(response){
-					var msg = "";
-					$.each(response, function(index){
-						fillHeaders(response[index]);
-						getTransactions(response[index]);
-					});
-				},
-				error: function(error){
-					alert("There was an error, try again");
-				}
-			});
-	}
-	function fillHeaders(account){
-		if (account.typeofaccount == "deposit") {
-			$('#checkingAccHeader').text("Checking: " + account.iban);
-			$('#totalAmountChecking').text("Total Amount: " + account.balance);
-		}
-		else if(account.typeofaccount == "saving"){
-			$('#savingsAccHeader').text("Saving: " + account.iban);
-			$('#totalAmountSaving').text("Total Amount: " + account.balance);
-		}
-	}
+    function getAccounts(account) {
+        $.ajax({
+            url: 'account/listaccount/' + account.userid,
+            type: 'GET',
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                var msg = "";
+                $.each(response, function (index) {
+                    fillHeaders(response[index]);
+                    getTransactions(response[index]);
+                });
+            },
+            error: function (error) {
+                alert("There was an error, try again");
+            }
+        });
+    }
 
-	function showTransactions(transactions, accountsIban)
-	{
-		var html = `<div class="transactions">
+    function fillHeaders(account) {
+        if (account.typeofaccount == "deposit") {
+            $('#checkingAccHeader').text("Checking: " + account.iban);
+            $('#totalAmountChecking').text("Total Amount: " + account.balance);
+        } else if (account.typeofaccount == "saving") {
+            $('#savingsAccHeader').text("Saving: " + account.iban);
+            $('#totalAmountSaving').text("Total Amount: " + account.balance);
+        }
+    }
+
+    function showTransactions(transactions, accountsIban) {
+        var html = `<div class="transactions">
 									<p>Transaction date: ` + transactions.date + `</p>
 									<p>Recipient: ` + transactions.receiver + `</p>
 									<p>Amount: €` + transactions.amount + `</p>
 									</div>`
-		if (accountsIban.typeofaccount == "deposit")
-		{
-			$('#checkingTransactions').append(html);
-		}
+        if (accountsIban.typeofaccount == "deposit") {
+            $('#checkingTransactions').append(html);
+        } else if (accountsIban.typeofaccount == "saving") {
+            $('#savingsTransactions').append(html);
+        }
+    }
 
-		else if(accountsIban.typeofaccount  == "saving")
-		{
-			$('#savingsTransactions').append(html);
-		}
-	}
-
-	function getTransactions(account)
-	{
-			$.ajax({
-				url: 'transaction/account/' + account.iban,
-				type: 'GET',
-				async: false,
-				contentType: "application/json",
-				dataType: "json",
-				success:function(response){
-					var msg = "";
-					$.each(response, function(index){
-						showTransactions(response[index], account);
-					});
-				},
-				error: function(error){
-					alert("There was an error loading transactions");
-				}
-			});
-	}
+    function getTransactions(account) {
+        $.ajax({
+            url: 'transaction/account/' + account.iban,
+            type: 'GET',
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                var msg = "";
+                $.each(response, function (index) {
+                    showTransactions(response[index], account);
+                });
+            },
+            error: function (error) {
+                alert("There was an error loading transactions");
+            }
+        });
+    }
 
 
 </script>

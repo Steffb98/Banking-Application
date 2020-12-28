@@ -35,22 +35,22 @@ public class TransactionService {
         //this field is used for authorization and for getting all transactions for the receiving user
         transaction.setReceivinguser(receiver.getUserid());
 
-        if (sender.getIban().equals(receiver.getIban())){
+        if (sender.getIban().equals(receiver.getIban())) {
             throw new BadInputException(400, "Can not transfer to the same account");
         }
 
-        if (sender.getTransactionlimit().compareTo(transaction.getAmount()) <= 0){
+        if (sender.getTransactionlimit().compareTo(transaction.getAmount()) <= 0) {
             throw new BadInputException(400, "Amount exceed the transactionlimit");
         }
 
-        if (sender.getTypeofaccount() == SAVING){
-            if (!receiver.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(sender.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())){
+        if (sender.getTypeofaccount() == SAVING) {
+            if (!receiver.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(sender.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())) {
                 throw new BadInputException(400, "SAVING account can not transfer to another person's account");
             }
         }
 
-        if (receiver.getTypeofaccount() == SAVING){
-            if (!sender.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(receiver.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())){
+        if (receiver.getTypeofaccount() == SAVING) {
+            if (!sender.getIban().equals(accountService.getAccountFromUserIdWhereTypeOfAccountEquals(receiver.getUserid(), Account.TypeofaccountEnum.DEPOSIT).getIban())) {
                 throw new BadInputException(400, "SAVING account can not receive from another person's account");
             }
         }
@@ -64,7 +64,7 @@ public class TransactionService {
     public Transaction getTransactionById(Long id) throws NotFoundException, NotAuthorizedException {
         Transaction transaction = transactionRepository.findTransactionById(id);
         authorizationService.checkTransactionAuthorization(transaction);
-        if ( transaction == null) {
+        if (transaction == null) {
             throw new NotFoundException(404, "No transaction found with this id");
         }
 
@@ -78,7 +78,7 @@ public class TransactionService {
 
         List<Transaction> transactions = transactionRepository.getAllByPerforminguserOrReceivinguserOrderByDate(userId, userId);
 
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             throw new NotFoundException(404, "There are no transactions found for this account");
         }
 
@@ -92,7 +92,7 @@ public class TransactionService {
 
         List<Transaction> transactions = transactionRepository.findTransactionByReceiverOrSenderOrderByDate(accountId, accountId);
 
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             throw new NotFoundException(404, "There are no transactions found for this account");
         }
 

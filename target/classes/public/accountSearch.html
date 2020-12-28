@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/search.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/search.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
-		<a href="employeehome.html">
-    	<img src="style/logo.png" class="logo">
-		</a>
-      <a href="/perform_logout">
-          <img src="style/logout.png" class="logout">
-      </a>
+<div class="container">
+    <a href="employeehome.html">
+        <img src="style/logo.png" class="logo">
+    </a>
+    <a href="/perform_logout">
+        <img src="style/logout.png" class="logout">
+    </a>
 
     <p id="name" for="name"></p>
     <hr>
@@ -27,102 +27,98 @@
     <div class="flex-container">
         <div class="box">
             <div id="info"></div>
-    		</div>
-  	</div>
-	</div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
 
 <script type="text/javascript">
-	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-    if (loggedInUser.typeofuser !== "EMPLOYEE"){
+    var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    if (loggedInUser.typeofuser !== "EMPLOYEE") {
         window.location = "home.html";
     }
     $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
 
-	$(document).ready(function() {
-		$("#search").click(function(){
+    $(document).ready(function () {
+        $("#search").click(function () {
 
-			var iban = $('#accountIban').val().trim();
-				$.ajax({
-					url: 'account/' +  iban,
-					type:'get',
-					contentType:"application/json",
-					dataType:"json",
-					success:function(response){
-						var message = "";
-							fillData(response);
-					},
-					error: function(error){
-						alert("No account found with that Iban")
-					}
-				});
-		});
-	});
+            var iban = $('#accountIban').val().trim();
+            $.ajax({
+                url: 'account/' + iban,
+                type: 'get',
+                contentType: "application/json",
+                dataType: "json",
+                success: function (response) {
+                    var message = "";
+                    fillData(response);
+                },
+                error: function (error) {
+                    alert("No account found with that Iban")
+                }
+            });
+        });
+    });
 
-	function fillData(account)
-	{
-		if (account.typeofaccount == "deposit"){
-			var type = "Checking";
-		}
-		else if(account.typeofaccount == "saving"){
-			var type = "Savings";
-		}
-		if(account.iban == "NL01 INHO 0000 0000 01"){
-			var html = `<div class="block">
+    function fillData(account) {
+        if (account.typeofaccount == "deposit") {
+            var type = "Checking";
+        } else if (account.typeofaccount == "saving") {
+            var type = "Savings";
+        }
+        if (account.iban == "NL01 INHO 0000 0000 01") {
+            var html = `<div class="block">
 										<h3>Bank Account</h3>
 										<hr>
-										<p>Account holder:` + getNames(account) +`</p>
-										<p>Iban: ` + account.iban +`</p>
-										<p>Balance: €` + account.balance +`</p>
+										<p>Account holder:` + getNames(account) + `</p>
+										<p>Iban: ` + account.iban + `</p>
+										<p>Balance: €` + account.balance + `</p>
 								</div>`
-		$("#info").append(html);
-		} else {
-		var html = `<div class="block">
+            $("#info").append(html);
+        } else {
+            var html = `<div class="block">
 										<h3>` + type + `</h3>
 										<hr>
-										<p>Account holder:` + getNames(account) +`</p>
-										<p>Iban: ` + account.iban +`</p>
-										<p>Balance: €` + account.balance +`</p>
+										<p>Account holder:` + getNames(account) + `</p>
+										<p>Iban: ` + account.iban + `</p>
+										<p>Balance: €` + account.balance + `</p>
 										<button id="` + account.userid + `" class="btn">Check transactions</button>
 								</div>`
-		$("#info").html(html);
-		}
+            $("#info").html(html);
+        }
 
 
-		
-		// Using getNames function to retrieve first and last name of account holder through the saved
-		// userID in account object
-		document.getElementById(account.userid).addEventListener("click",function(){
-			sessionStorage.setItem('foundUser', JSON.stringify(account));
-			window.location = "accountInformation.html";
-		});
-	}
+        // Using getNames function to retrieve first and last name of account holder through the saved
+        // userID in account object
+        document.getElementById(account.userid).addEventListener("click", function () {
+            sessionStorage.setItem('foundUser', JSON.stringify(account));
+            window.location = "accountInformation.html";
+        });
+    }
 
-	function getNames(account)
-	{
-		var names = "";
-		var userid = account.userid;
-			$.ajax({
-				url:'user/search/' + account.userid,
-				type:'get',
-				async: false,
-				contentType: "application/json",
-				dataType:"json",
-				success:function(response){
-					var msg = "";
-					names = fillNames(response);
-				},
-				error: function(error){
-					alert("No user found with that name");
-				}
-			});
-			return names;
-	}
+    function getNames(account) {
+        var names = "";
+        var userid = account.userid;
+        $.ajax({
+            url: 'user/search/' + account.userid,
+            type: 'get',
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                var msg = "";
+                names = fillNames(response);
+            },
+            error: function (error) {
+                alert("No user found with that name");
+            }
+        });
+        return names;
+    }
 
-	function fillNames(user){
-		var names = user.firstname + " " + user.lastname;
-		return names;
-	}
+    function fillNames(user) {
+        var names = user.firstname + " " + user.lastname;
+        return names;
+    }
 </script>

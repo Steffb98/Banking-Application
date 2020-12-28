@@ -4,7 +4,8 @@ package io.swagger.exception;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-11-21T13:18:37.550Z[GMT]")
 public class AlreadyExistsException extends ApiException {
     private int code;
-    public AlreadyExistsException (int code, String msg) {
+
+    public AlreadyExistsException(int code, String msg) {
         super(code, msg);
         this.code = code;
     }

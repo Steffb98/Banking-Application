@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset= "utf-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="style/transactionView.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -24,7 +24,7 @@
             <h3 id="text1">Saving Transactions</h3>
             <hr>
             <div Class="scrollTransaction">
-                <div id = "transactionview" >
+                <div id="transactionview">
                 </div>
             </div>
         </div>
@@ -38,8 +38,8 @@
                 <h3 id="text1">Checking</h3>
             </a>
             <hr>
-            <p id="nameChecking" for = "nameChecking"></p>
-            <p id="IBANChecking" for = "IBANChecking"></p>
+            <p id="nameChecking" for="nameChecking"></p>
+            <p id="IBANChecking" for="IBANChecking"></p>
             <p id="moneyChecking"></p>
         </div>
 
@@ -48,8 +48,8 @@
                 <h3 id="text1">Saving</h3>
             </a>
             <hr>
-            <p id="nameSaving" for = "nameSaving"></p>
-            <p id="IBANSaving" for = "IBANSaving"></p>
+            <p id="nameSaving" for="nameSaving"></p>
+            <p id="IBANSaving" for="IBANSaving"></p>
             <p id="moneySaving"></p>
 
         </div>
@@ -67,7 +67,7 @@
     $('#nameChecking').text(loggedInUser.firstname + " " + loggedInUser.lastname);
     $('#nameSaving').text(loggedInUser.firstname + " " + loggedInUser.lastname);
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         $.ajax({
             url: 'account/listaccount/' + loggedInUser.userId,
             type: 'get',
@@ -85,7 +85,7 @@
         });
     });
 
-    function getTransAction(account){
+    function getTransAction(account) {
         if (account.typeofaccount == "saving") {
             $.ajax({
                 url: 'transaction/account/' + account.iban,
@@ -119,8 +119,7 @@
         }
     }
 
-    function showTransaction(transaction)
-    {
+    function showTransaction(transaction) {
         var html = `<div Class="transactions">
 						<p>` + transaction.date + `</p>
 						<p>` + "from: " + transaction.sender + `</p>

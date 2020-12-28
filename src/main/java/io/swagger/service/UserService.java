@@ -1,7 +1,6 @@
 package io.swagger.service;
 
 import io.swagger.exception.AlreadyExistsException;
-import io.swagger.exception.BadInputException;
 import io.swagger.exception.NotAuthorizedException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.Account;
@@ -30,7 +29,7 @@ public class UserService {
         this.authorizationService = authorizationService;
     }
 
-    public User getLoggedInUser(){
+    public User getLoggedInUser() {
         Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return (User) security;
     }
@@ -38,15 +37,15 @@ public class UserService {
     public User getUserById(Long userId) throws NotFoundException, NotAuthorizedException {
         authorizationService.checkUserAuthorization(userId);
         User user = userRepository.findUserByUserId(userId);
-        if(user == null){
+        if (user == null) {
             throw new NotFoundException(404, "User not found");
         }
         return user;
     }
 
     @Transactional(rollbackOn = Exception.class)
-    public void createUser(User user) throws AlreadyExistsException, BadInputException, NotFoundException {
-        if(userRepository.findByUsername(user.getUsername()) != null){
+    public void createUser(User user) throws AlreadyExistsException, NotFoundException {
+        if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new AlreadyExistsException(409, "Username already exists");
         }
         User createdUser = userRepository.save(new User(user.getFirstname(), user.getLastname(), user.getUsername(), user.getPassword(), TypeofuserEnum.CUSTOMER));
@@ -58,11 +57,11 @@ public class UserService {
 
     public void toggleUserStatus(Long userId) throws NotFoundException {
         User user = userRepository.findUserByUserId(userId);
-        if(user != null){
+        if (user != null) {
             //setting isActive to the opposite of the current value
             user.setEnabled(!user.isEnabled());
             userRepository.save(user);
-        }else{
+        } else {
             throw new NotFoundException(404, "User not found");
         }
     }
@@ -71,7 +70,7 @@ public class UserService {
         User user = userRepository.findUserByUserId(userId);
         authorizationService.checkUserAuthorization(userId);
 
-        if(user == null) {
+        if (user == null) {
             throw new NotFoundException(404, "User not found");
         }
         if (!password.isEmpty()) {

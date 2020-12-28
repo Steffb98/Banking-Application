@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/search.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/search.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
-		<a href="employeehome.html">
-    	<img src="style/logo.png" class="logo">
-		</a>
-      <a href="/perform_logout">
-          <img src="style/logout.png" class="logout">
-      </a>
+<div class="container">
+    <a href="employeehome.html">
+        <img src="style/logo.png" class="logo">
+    </a>
+    <a href="/perform_logout">
+        <img src="style/logout.png" class="logout">
+    </a>
 
     <p id="name" for="name"></p>
     <hr>
@@ -30,48 +30,47 @@
         </div>
     </div>
 
-  </div>
+</div>
 
 </body>
 </html>
 <script type="text/javascript">
-	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-    if (loggedInUser.typeofuser !== "EMPLOYEE"){
+    var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    if (loggedInUser.typeofuser !== "EMPLOYEE") {
         window.location = "home.html";
     }
     $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
-	
-  $(document).ready(function(){
 
-    $("#search").click(function(){
-        var searchNumber = $('#searchNumber').val().trim();
-        $.ajax({
-            url: 'user/search/' + searchNumber,
-            type: 'GET',
-            async: false,
-            contentType: "application/json",
-            dataType: "json",
-            success: function (response) {
-                fillData(response);
-            },
-            error: function (error) {
-                alert("No user found with that number");
-            }
+    $(document).ready(function () {
+
+        $("#search").click(function () {
+            var searchNumber = $('#searchNumber').val().trim();
+            $.ajax({
+                url: 'user/search/' + searchNumber,
+                type: 'GET',
+                async: false,
+                contentType: "application/json",
+                dataType: "json",
+                success: function (response) {
+                    fillData(response);
+                },
+                error: function (error) {
+                    alert("No user found with that number");
+                }
+            });
         });
     });
-  });
 
-	function fillData(User)
-	{
+    function fillData(User) {
         if (User.userId == 100000) {
             alert("Forbidden User");
         } else {
 
             var html = `<div class="block">
-							<h3>` + "Name: "+ User.firstname + " " + User.lastname + `</h3>
+							<h3>` + "Name: " + User.firstname + " " + User.lastname + `</h3>
 							<hr>
-							<p>` + "Username: "+ User.username + `</p>
-                            <p>` + "Active: "+ User.enabled + `</p>
+							<p>` + "Username: " + User.username + `</p>
+                            <p>` + "Active: " + User.enabled + `</p>
 							<button id="` + User.userId + `" class="btn">Check user information</button>
 						</div>`
             $("#info").html(html);
@@ -81,5 +80,5 @@
             sessionStorage.setItem('searchedUser', JSON.stringify(User));
             window.location = "userInformation.html";
         });
-	}
+    }
 </script>

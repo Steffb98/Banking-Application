@@ -13,7 +13,7 @@ public class AuthorizationService {
     protected void checkUserAuthorization(Long userId) throws NotAuthorizedException {
         Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (((User) security).getuserId().equals(userId) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
+        if (((User) security).getuserId().equals(userId) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
             return;
         }
 
@@ -23,7 +23,7 @@ public class AuthorizationService {
     protected void checkAccountAuthorization(Account account) throws NotAuthorizedException {
         Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (((User) security).getuserId().equals(account.getUserid()) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
+        if (((User) security).getuserId().equals(account.getUserid()) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
             return;
         }
 
@@ -35,7 +35,7 @@ public class AuthorizationService {
 
         if (((User) security).getuserId().equals(transaction.getPerforminguser()) ||
                 ((User) security).getuserId().equals(transaction.getReceivinguser()) ||
-                ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
+                ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))) {
             return;
         }
 

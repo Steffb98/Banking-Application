@@ -1,73 +1,74 @@
-body
-{
-	background: url(background.jpg);
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	max-width: 100%;
-	height:auto;
+body {
+    background: url(background.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    max-width: 100%;
+    height: auto;
 }
-.container
-{
-  margin-top: 5%;
-  margin-bottom: 5%;
-  margin-right:auto;
-  margin-left:auto;
-  max-width: 80vw;
-  height: 55vw;
-  padding: 2vw;
-  background-color: white;
-  overflow: auto;
+
+.container {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 80vw;
+    height: 55vw;
+    padding: 2vw;
+    background-color: white;
+    overflow: auto;
 }
-.logo
-{
-  width: 8vw;
+
+.logo {
+    width: 8vw;
 }
-.logout
-{
-  width: 2vw;
-  float:right;
-  margin-top: 5vw;
+
+.logout {
+    width: 2vw;
+    float: right;
+    margin-top: 5vw;
 }
-#name
-{
-  margin-top: 5.5vw;
-  margin-right: 1vw;
-  float: right;
+
+#name {
+    margin-top: 5.5vw;
+    margin-right: 1vw;
+    float: right;
 }
-.box
-{
-  width: 35vw;
-  height: 43vw;
-  margin: auto;
+
+.box {
+    width: 35vw;
+    height: 43vw;
+    margin: auto;
 }
-#searchBalk
-{
-	margin-left: 20vw;
-	margin-top: 2vw;
+
+#searchBalk {
+    margin-left: 20vw;
+    margin-top: 2vw;
 }
-.block
-{
-  border-radius: 25px;
-  border: 0.1vw solid black;
-  padding: 2vw;
-  width: 31vw;
-  height: auto;
-  margin-bottom: 2vw;
-	margin-top: 2vw;
+
+.block {
+    border-radius: 25px;
+    border: 0.1vw solid black;
+    padding: 2vw;
+    width: 31vw;
+    height: auto;
+    margin-bottom: 2vw;
+    margin-top: 2vw;
 }
-#text1
-{
-  margin-top: -0.5vw;
+
+#text1 {
+    margin-top: -0.5vw;
 }
-.flex-container{
+
+.flex-container {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-content: space-around;
-		height: auto;
+    height: auto;
 }
-input.search{
+
+input.search {
     width: 30vw;
     margin-left: 2.6vw;
     font-size: 1.2em;
@@ -77,11 +78,13 @@ input.search{
     border-style: solid;
     border-width: 1px;
 }
-input.search:focus{
+
+input.search:focus {
     background-color: #ddd;
     outline: none;
 }
-input.submit{
+
+input.submit {
     font-size: 1.2em;
     background-color: #008CBA;
     border: none;
@@ -92,15 +95,17 @@ input.submit{
     cursor: pointer;
     opacity: 0.9;
 }
-input.submit:hover{
+
+input.submit:hover {
     opacity: 1;
 }
-.btn{
-	background-color: #4CAF50;
-  color: white;
-  padding: 0.5vw 0.5vw;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.5vw 0.5vw;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
 }

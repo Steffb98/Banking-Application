@@ -1,75 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/home.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/home.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
-		<a href="employeehome.html">
-    	<img src="style/logo.png" class="logo">
-		</a>
-      <a href="/perform_logout">
-          <img src="style/logout.png" class="logout">
-      </a>
+<div class="container">
+    <a href="employeehome.html">
+        <img src="style/logo.png" class="logo">
+    </a>
+    <a href="/perform_logout">
+        <img src="style/logout.png" class="logout">
+    </a>
 
     <p id="name" for="name"></p>
     <hr>
 
     <div id="info" class="box">
-      <div id="infoBlock" class="block">
-        <h3 id="infoText">User information</h3>
-				<button id="userToggle" class="toggle"></button>
-				<hr>
-				<p id="userFirstName"></p>
-				<p id="userLastName"></p>
-				<p id="userName"></p>
-				<p id="userEnabled"></p>
-      </div>
+        <div id="infoBlock" class="block">
+            <h3 id="infoText">User information</h3>
+            <button id="userToggle" class="toggle"></button>
+            <hr>
+            <p id="userFirstName"></p>
+            <p id="userLastName"></p>
+            <p id="userName"></p>
+            <p id="userEnabled"></p>
+        </div>
 
     </div>
     <div id="line" class="vl"></div>
     <div id="accounts" class="box">
 
-      <div class="block">
-        <h3 id="text1">Deposit</h3>
-				<button id="accountToggle" class="toggle"></button>
-        <hr>
-        <p id="nameUser"></p>
-        <p id="depositIban"></p>
-        <p id="depositValue" class="value"></p>
-      </div>
+        <div class="block">
+            <h3 id="text1">Deposit</h3>
+            <button id="accountToggle" class="toggle"></button>
+            <hr>
+            <p id="nameUser"></p>
+            <p id="depositIban"></p>
+            <p id="depositValue" class="value"></p>
+        </div>
 
-      <div id="transaction" class="block">
-        <h3 id="text1">Saving</h3>
-				<button id="accountToggle1" class="toggle"></button>
-        <hr>
-        <p id="nameUserSaving"></p>
-        <p id="savingIban"></p>
-        <p id="savingValue" class="value"></p>
+        <div id="transaction" class="block">
+            <h3 id="text1">Saving</h3>
+            <button id="accountToggle1" class="toggle"></button>
+            <hr>
+            <p id="nameUserSaving"></p>
+            <p id="savingIban"></p>
+            <p id="savingValue" class="value"></p>
 
-      </div>
+        </div>
 
     </div>
-		<a href="userSearch.html">
+    <a href="userSearch.html">
         <button id="cancel" class="btn">Cancel</button>
     </a>
-  </div>
+</div>
 
 </body>
 </html>
 <script type="text/javascript">
-	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-    if (loggedInUser.typeofuser !== "EMPLOYEE"){
+    var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    if (loggedInUser.typeofuser !== "EMPLOYEE") {
         window.location = "home.html";
     }
     $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
 
-	var searchedUser = JSON.parse(sessionStorage.getItem("searchedUser"));
-	var user;
+    var searchedUser = JSON.parse(sessionStorage.getItem("searchedUser"));
+    var user;
 
 
     $(document).ready(function () {
@@ -116,28 +116,26 @@
         });
     });
 
-    function fillData(user)
-    {
-        $('#userFirstName').text("First name: "+user.firstname);
-        $('#nameUser').text(user.firstname + " "+user.lastname);
-        $('#nameUserSaving').text(user.firstname + " "+user.lastname);
-        $('#userLastName').text("Last name: "+user.lastname);
-        $('#userName').text("UserName: "+user.username);
-        $('#userEnabled').text("Active: "+user.enabled);
+    function fillData(user) {
+        $('#userFirstName').text("First name: " + user.firstname);
+        $('#nameUser').text(user.firstname + " " + user.lastname);
+        $('#nameUserSaving').text(user.firstname + " " + user.lastname);
+        $('#userLastName').text("Last name: " + user.lastname);
+        $('#userName').text("UserName: " + user.username);
+        $('#userEnabled').text("Active: " + user.enabled);
         checkUserToggle(user);
     }
-	function fillIban(account)
-	{
-		if(account.typeofaccount == "deposit"){
-			$('#depositIban').text(account.iban);
-			$('#depositValue').text("€"+account.balance);
-		}
-		else if (account.typeofaccount == "saving"){
-			$('#savingIban').text(account.iban);
-			$('#savingValue').text("€"+account.balance);
-		}
-		checkAccountToggle(account);
-	}
+
+    function fillIban(account) {
+        if (account.typeofaccount == "deposit") {
+            $('#depositIban').text(account.iban);
+            $('#depositValue').text("€" + account.balance);
+        } else if (account.typeofaccount == "saving") {
+            $('#savingIban').text(account.iban);
+            $('#savingValue').text("€" + account.balance);
+        }
+        checkAccountToggle(account);
+    }
 
     $("#accountToggle").click(function () {
         var iban = $('#depositIban').text().trim();
@@ -171,46 +169,40 @@
         });
     });
 
-	function checkUserToggle(user)
-	{
-		if(user.enabled === true)
-		{
-			$('#userToggle').text("Deactivate user");
-			var user = document.getElementById("userToggle");
-			user.style.backgroundColor = "red";
-		}
-		if(user.enabled === false)
-		{
-			$('#userToggle').text("Activate user");
-			var user = document.getElementById("userToggle");
-			user.style.backgroundColor = "green";
-		}
-	}
-	function checkAccountToggle(account)
-	{
-		if(account.typeofaccount === "deposit"){
-			if(account.isactive === true){
-				$('#accountToggle').text("Deactivate account");
-				var depositAccount = document.getElementById("accountToggle");
-				depositAccount.style.backgroundColor = "red";
-			}
-			else{
-				$('#accountToggle').text("Activate account");
-				var depositAccount = document.getElementById("accountToggle");
-				depositAccount.style.backgroundColor = "green";
-			}
-		}
-		else if (account.typeofaccount == "saving"){
-			if(account.isactive == true){
-				$('#accountToggle1').text("Deactivate account");
-				var savingAccount = document.getElementById("accountToggle1");
-				savingAccount.style.backgroundColor = "red";
-			}
-			else{
-				$('#accountToggle1').text("Activate account");
-				var savingAccount = document.getElementById("accountToggle1");
-				savingAccount.style.backgroundColor = "green";
-			}
-		}
-	}
+    function checkUserToggle(user) {
+        if (user.enabled === true) {
+            $('#userToggle').text("Deactivate user");
+            var user = document.getElementById("userToggle");
+            user.style.backgroundColor = "red";
+        }
+        if (user.enabled === false) {
+            $('#userToggle').text("Activate user");
+            var user = document.getElementById("userToggle");
+            user.style.backgroundColor = "green";
+        }
+    }
+
+    function checkAccountToggle(account) {
+        if (account.typeofaccount === "deposit") {
+            if (account.isactive === true) {
+                $('#accountToggle').text("Deactivate account");
+                var depositAccount = document.getElementById("accountToggle");
+                depositAccount.style.backgroundColor = "red";
+            } else {
+                $('#accountToggle').text("Activate account");
+                var depositAccount = document.getElementById("accountToggle");
+                depositAccount.style.backgroundColor = "green";
+            }
+        } else if (account.typeofaccount == "saving") {
+            if (account.isactive == true) {
+                $('#accountToggle1').text("Deactivate account");
+                var savingAccount = document.getElementById("accountToggle1");
+                savingAccount.style.backgroundColor = "red";
+            } else {
+                $('#accountToggle1').text("Activate account");
+                var savingAccount = document.getElementById("accountToggle1");
+                savingAccount.style.backgroundColor = "green";
+            }
+        }
+    }
 </script>
