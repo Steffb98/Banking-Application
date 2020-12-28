@@ -18,11 +18,11 @@ import java.sql.Date;
 public class SwaggerDocumentationConfig {
 
     @Bean
-    public Docket customImplementation(){
+    public Docket customImplementation() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                    .apis(RequestHandlerSelectors.basePackage("io.swagger.api"))
-                    .build()
+                .apis(RequestHandlerSelectors.basePackage("io.swagger.api"))
+                .build()
                 .directModelSubstitute(LocalDate.class, Date.class)
                 .directModelSubstitute(OffsetDateTime.class, java.util.Date.class)
                 .apiInfo(apiInfo());
@@ -36,7 +36,7 @@ public class SwaggerDocumentationConfig {
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
                 .termsOfServiceUrl("")
                 .version("2.0.0")
-                .contact(new Contact("","", "you@your-company.com"))
+                .contact(new Contact("", "", "you@your-company.com"))
                 .build();
     }
 

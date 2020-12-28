@@ -18,12 +18,12 @@ public class ScheduledTasks {
     }
 
     @Scheduled(cron = "0 1 * * * ?")
-    public void resetAccountDayLimit(){
-        logger.log(Level.INFO,"Resetting day limit...");
+    public void resetAccountDayLimit() {
+        logger.log(Level.INFO, "Resetting day limit...");
         accountService.getAllAccounts().forEach(account -> {
-                    account.setNumberoftransactions(0L);
-                    accountService.updateAccount(account);
-                });
+            account.setNumberoftransactions(0L);
+            accountService.updateAccount(account);
+        });
 
     }
 }

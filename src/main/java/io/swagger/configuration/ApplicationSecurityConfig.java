@@ -25,9 +25,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
         return new MySimpleUrlAuthenticationSuccessHandler();
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsServiceImp);
@@ -36,11 +37,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() //TODO: dit wordt later verandert
+                .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/style/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/user/search/**").hasAuthority(USER_READ.getPermission())
                 .antMatchers(HttpMethod.POST, "/user").hasAuthority(USER_WRITE.getPermission())
-                .antMatchers(HttpMethod.PUT, "/user/**").hasAuthority(USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/user").hasAuthority(USER_UPDATE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/user/activity/**").hasAuthority(USER_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/account/**").hasAuthority(ACCOUNT_READ.getPermission())
                 .antMatchers(HttpMethod.POST, "/account").hasAuthority(ACCOUNT_WRITE.getPermission())
                 .antMatchers(HttpMethod.PUT, "/account/activity/**").hasAuthority(ACCOUNT_WRITE.getPermission())
@@ -61,6 +64,5 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/perform_logout")
                 .deleteCookies("JSESSIONID")
                 .permitAll();
-
     }
 }

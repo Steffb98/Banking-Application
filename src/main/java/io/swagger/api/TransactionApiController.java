@@ -38,7 +38,7 @@ public class TransactionApiController implements TransactionApi {
         this.transactionService = transactionService;
     }
 
-    public ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Transaction body) throws NotFoundException ,BadInputException, LimitReachedException {
+    public ResponseEntity addTransaction(@Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody Transaction body) throws NotFoundException, BadInputException, LimitReachedException {
         try {
             transactionService.addTransaction(body);
             return ResponseEntity
@@ -53,36 +53,36 @@ public class TransactionApiController implements TransactionApi {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
-        } catch (NotFoundException nfe){
+        } catch (NotFoundException nfe) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(nfe.getMessage());
-        } catch (BadInputException bie){
+        } catch (BadInputException bie) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bie.getMessage());
-        } catch (LimitReachedException lre){
+        } catch (LimitReachedException lre) {
             return ResponseEntity
                     .status(HttpStatus.TOO_MANY_REQUESTS)
                     .body(lre.getMessage());
         }
     }
 
-    public ResponseEntity getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required=true, schema=@Schema()) @PathVariable("transactionId") Long transactionId) throws NotFoundException {
+    public ResponseEntity getTransactionById(@Parameter(in = ParameterIn.PATH, description = "ID of transaction to return", required = true, schema = @Schema()) @PathVariable("transactionId") Long transactionId) throws NotFoundException {
         try {
             return new ResponseEntity<Transaction>(transactionService.getTransactionById(transactionId), HttpStatus.OK);
         } catch (NotAuthorizedException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
-        } catch (NotFoundException nfe){
+        } catch (NotFoundException nfe) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(nfe.getMessage());
         }
     }
 
-    public ResponseEntity getTransactionFromAccount(@Parameter(in = ParameterIn.PATH, description = "ID of an account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) throws NotFoundException, BadInputException{
+    public ResponseEntity getTransactionFromAccount(@Parameter(in = ParameterIn.PATH, description = "ID of an account", required = true, schema = @Schema()) @PathVariable("accountId") String accountId) throws NotFoundException, BadInputException {
         try {
             return new ResponseEntity(transactionService.getAllTransactionsFromAccount(accountId), HttpStatus.OK);
         } catch (ForbiddenException e) {
@@ -93,25 +93,25 @@ public class TransactionApiController implements TransactionApi {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
-        }catch (NotFoundException nfe){
+        } catch (NotFoundException nfe) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(nfe.getMessage());
-        } catch (BadInputException bie){
+        } catch (BadInputException bie) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bie.getMessage());
         }
     }
 
-    public ResponseEntity getTransactionFromUser(@Parameter(in = ParameterIn.PATH, description = "ID of a user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) throws NotFoundException{
+    public ResponseEntity getTransactionFromUser(@Parameter(in = ParameterIn.PATH, description = "ID of a user", required = true, schema = @Schema()) @PathVariable("userId") Long userId) throws NotFoundException {
         try {
             return new ResponseEntity(transactionService.getAllTransactionsFromUser(userId), HttpStatus.OK);
         } catch (NotAuthorizedException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
-        } catch (NotFoundException nfe){
+        } catch (NotFoundException nfe) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(nfe.getMessage());

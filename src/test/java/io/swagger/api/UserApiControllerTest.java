@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,7 +33,7 @@ public class UserApiControllerTest {
     private HttpHeaders headers = new HttpHeaders();
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         user = new User("Test", "Tester", "Test", "Test112", TypeofuserEnum.EMPLOYEE);
         headers.setBasicAuth("test", "test");
     }

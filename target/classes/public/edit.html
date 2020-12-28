@@ -1,126 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style/edit.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style/edit.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
     <a href="home.html">
-      <img src="style/logo.png" class="logo">
+        <img src="style/logo.png" class="logo">
     </a>
     <a href="/perform_logout">
-      <img src="style/logout.png" class="logout">
+        <img src="style/logout.png" class="logout">
     </a>
 
     <p id="name" for="name"></p>
     <hr>
 
     <div id="password_div" class="box">
-      <div id="edit" class="block">
-        <h3>Change your password</h3>
-        <hr>
+        <div id="edit" class="block">
+            <h3>Change your password</h3>
+            <hr>
 
-        <label for="pw"><b>Password</b></label>
-        <input type="password" placeholder="Enter a new Password" id="pw"  required>
+            <label for="pw"><b>Password</b></label>
+            <input type="password" placeholder="Enter a new Password" id="pw" required>
 
-        <label for="cpw"><b>Confirm Password</b></label>
-        <input type="password" placeholder="Repeat Password" id="cpw" required>
+            <label for="cpw"><b>Confirm Password</b></label>
+            <input type="password" placeholder="Repeat Password" id="cpw" required>
 
-        <input type="button" name= "change_pw" id="change_pw" class="btn" value="Change password">
-      </div>
-    </div>
-
-    <div class="vl" id="v1"></div>
-
-    <div id="email_div" class="box">
-      <div id="edit" class="block">
-        <h3>Change your Email</h3>
-        <hr>
-
-        <label for="email"><b>Email</b></label>
-        <input type="text" placeholder="Enter a new email" id="email"  required>
-
-        <label for="c_email"><b>Confirm email</b></label>
-        <input type="text" placeholder="Repeat new email" id="c_email" required>
-
-        <input type="button" name= "change_email" class="btn" id="change_email" value="Change email">
-      </div>
+            <input type="button" name="change_pw" id="change_pw" class="btn" value="Change password">
+        </div>
     </div>
 
     <a href="home.html">
         <button id="cancel" class="btn">Cancel</button>
     </a>
-  </div>
+</div>
 
 </body>
 </html>
 <script>
-  var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-  if(loggedInUser.isactive == "false"){
-    window.location = "index.html";
-  }
-  if(loggedInUser.typeofuser == "employee" ){
-    document.getElementById('email_div').style.visibility = 'hidden';
-    document.getElementById('v1').style.visibility = 'hidden';
-    document.getElementById('password_div').style.marginLeft = '27.5%';
-  } else {
-    document.getElementById('email_div').style.visibility = 'visible';
-    document.getElementById('v1').style.visibility = 'visible';
-    document.getElementById('password_div').style.marginLeft = '0%';
-  }
-  $(document).ready(function(){
-    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-    var userId = loggedInUser.id;
-    var password = loggedInUser.password;
-    var email = loggedInUser.email;
-    $("#change_pw").click(function(){
-      if($('#pw').val() == password){
-        alert("New password can't be the same as the old password");
-        window.location = "edit.html";
-      }
-      else if($('#pw').val() === $('#cpw').val()) {
-        password = $('#pw').val().trim();
-      }
-      $.ajax({
-        url:'users?id='+userId+'&email='+email+'&password='+password,
-        type:'PUT',
-        contentType: "application/json",
-        dataType: "json",
-				//data:{id:userId,email:email,password:password},
-        success:function(response){
-          window.location = "home.html";
-        },
-        error: function(error){
-					alert("Invalid user");
+
+    var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    $(document).ready(function () {
+        $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
+        $("#change_pw").click(function () {
+            updatePassword()
+        })
+
+    });
+
+    function updatePassword() {
+        if ($('#pw').val() !== $('#cpw').val()) {
+            alert("Passwords do not match!");
+            location.reload();
+        } else if (!ValidatePassword($('#pw').val())) {
+            alert("Password must exist of 8-15 characters, at least 1 lower- and uppercase letter, 1 number and 1 special character");
+            location.reload();
+        } else {
+            let password = $('#pw').val().trim();
+
+            $.ajax({
+                url: 'user/' + loggedInUser.userId + "?password=" + password,
+                type: 'PUT',
+                contentType: "application/json",
+                success: function (response) {
+                    alert("Password has been successfully updated");
+                    location.reload();
+                },
+                error: function (error) {
+                    alert(error.responseText);
+                }
+            });
         }
-      });
-    })
-    $("#change_email").click(function(){
-      if($('#email').val() == email){
-        alert("New email can't be the same as the old email")
-        window.location = "edit.html";
-      }
-      else if($('#email').val() === $('#c_email').val()) {
-        email = $('#email').val().trim();
-      }
-      $.ajax({
-        url:'users?id='+userId+'&email='+email+'&password='+password,
-        type:'PUT',
-        contentType: "application/json",
-        dataType: "json",
-        success:function(response){
-          window.location = "home.html";
-        },
-        error: function(error){
-					alert("Invalid user");
+    }
+
+    function ValidatePassword(pw) {
+        var decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+        if (decimal.test(pw)) {
+            return true;
+        } else {
+            return false;
         }
-      });
-    })
-    
-  });
-  
+    }
+
+
 </script>

@@ -2,12 +2,9 @@ package io.swagger.service;
 
 import io.swagger.exception.*;
 import io.swagger.model.Account;
-import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,49 +17,44 @@ import static io.swagger.model.Account.TypeofaccountEnum.BANK;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
+    private final AuthorizationService authorizationService;
     private final int IBAN_FORMAT_CHARACTERS = 18;
     private final int USERID_FORMAT_CHARACTERS = 6;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository, UserService userService){
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository, AuthorizationService authorizationService) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
-        this.userService = userService;
-    }
-
-    private void checkAccountAuthorization(Account account) throws NotAuthorizedException {
-        Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (((User) security).getuserId().equals(account.getUserid()) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
-            return;
-        }
-
-        throw new NotAuthorizedException(401, "not authorized");
+        this.authorizationService = authorizationService;
     }
 
     public Account getAccountByIban(String iban) throws NotFoundException, BadInputException, NotAuthorizedException, ForbiddenException {
+        Account account = accountChecks(iban);
+
+        authorizationService.checkAccountAuthorization(account);
+
+        return account;
+    }
+
+    private Account accountChecks(String iban) throws BadInputException, NotFoundException, ForbiddenException {
         if (iban.length() != IBAN_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of iban is incorrect");
         }
 
         Account account = accountRepository.findAccountByIban(iban);
 
-        if (account.getTypeofaccount() == BANK){
-            throw new ForbiddenException(403, "can't access this account");
-        }
-
-        checkAccountAuthorization(account);
-
         if (account == null) {
             throw new NotFoundException(404, "No account found with this iban");
         }
 
+        if (account.getTypeofaccount() == BANK) {
+            throw new ForbiddenException(403, "can't access this account");
+        }
         return account;
     }
 
     public List<Account> getAccountsByUserId(Long userId) throws BadInputException, NotFoundException, NotAuthorizedException {
-        userService.checkUserAuthorization(userId);
+        authorizationService.checkUserAuthorization(userId);
         if (userId.toString().length() != USERID_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of userid is incorrect");
         }
@@ -77,20 +69,7 @@ public class AccountService {
     }
 
     public void toggleActivityStatus(String iban) throws NotFoundException, BadInputException, ForbiddenException {
-        if (iban.length() != IBAN_FORMAT_CHARACTERS) {
-            throw new BadInputException(400, "Format of iban is incorrect");
-        }
-
-        //retrieving account from database to use the built-in security from h2o
-        Account account = accountRepository.findAccountByIban(iban);
-
-        if (account.getTypeofaccount() == BANK){
-            throw new ForbiddenException(403, "can't access this account");
-        }
-
-        if (account == null) {
-            throw new NotFoundException(404, "No account found with this iban");
-        }
+        Account account = accountChecks(iban);
 
         //setting isActive to the opposite of the current value
         account.setIsactive(!account.getIsactive());
@@ -99,7 +78,7 @@ public class AccountService {
     }
 
     public void createAccount(Account acc) throws NotFoundException {
-        if (userRepository.findUserByUserId(acc.getUserid()) == null){
+        if (userRepository.findUserByUserId(acc.getUserid()) == null) {
             throw new NotFoundException(404, "User not found");
         }
 
@@ -108,8 +87,8 @@ public class AccountService {
         accountRepository.save(newAcc);
     }
 
-    public String generateIban(){
-        while(true){
+    public String generateIban() {
+        while (true) {
             Random rnd = new Random();
             int min = 02;
             int max = 99;
@@ -124,19 +103,23 @@ public class AccountService {
 
             generatedIban += "0" + generatedNumber;
 
-            if (accountRepository.findAccountByIban(generatedIban) == null){
+            if (accountRepository.findAccountByIban(generatedIban) == null) {
                 return generatedIban;
             }
         }
     }
 
-    public List<Account> getAllAccounts(){ return (List<Account>) accountRepository.findAll(); }
+    public List<Account> getAllAccounts() {
+        return (List<Account>) accountRepository.findAll();
+    }
 
-    public Account getAccountFromUserIdWhereTypeOfAccountEquals(Long userId, Account.TypeofaccountEnum typeOfAccount){
+    public Account getAccountFromUserIdWhereTypeOfAccountEquals(Long userId, Account.TypeofaccountEnum typeOfAccount) {
         return accountRepository.findAccountByUseridAndTypeofaccountEquals(userId, typeOfAccount);
     }
 
-    public void updateAccount(Account account){ accountRepository.save(account); }
+    public void updateAccount(Account account) {
+        accountRepository.save(account);
+    }
 
     public Boolean checkDayLimit(Account account) {
         if (account.getNumberoftransactions() < account.getDaylimit()) {
@@ -148,28 +131,28 @@ public class AccountService {
         }
     }
 
-    public Boolean checkBalance(Account account, BigDecimal amount){
-        if (account.getBalance().subtract(amount).compareTo(account.getAbsolutlimit()) == -1 ){
-            return true;
-        } else {
-            return false;
-        }
+    public Boolean checkBalance(Account account, BigDecimal amount) {
+        return account.getBalance().subtract(amount).compareTo(account.getAbsolutlimit()) < 0;
     }
 
-    public void updateBalance(Account account, BigDecimal amount, TypeOfTransactionEnum typeOfTransactionEnum) throws LimitReachedException{
+    public void updateBalance(Account account, BigDecimal amount, TypeOfTransactionEnum typeOfTransactionEnum) throws LimitReachedException {
 
-        if (typeOfTransactionEnum == TypeOfTransactionEnum.ADD){
+        if (typeOfTransactionEnum == TypeOfTransactionEnum.ADD) {
             account.setBalance(account.getBalance().add(amount));
         } else {
-            if (checkDayLimit(account)){ throw new LimitReachedException(429, "You have reached your daily limit");}
-            if (checkBalance(account, amount)){ throw new LimitReachedException(429, "You don't have enough money on your account");}
+            if (checkDayLimit(account)) {
+                throw new LimitReachedException(429, "You have reached your daily limit");
+            }
+            if (checkBalance(account, amount)) {
+                throw new LimitReachedException(429, "You don't have enough money on your account");
+            }
             account.setBalance(account.getBalance().subtract(amount));
         }
         accountRepository.save(account);
     }
 
     public enum TypeOfTransactionEnum {
-        ADD, SUBTRACT;
+        ADD, SUBTRACT
     }
 }
 

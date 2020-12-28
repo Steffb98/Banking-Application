@@ -5,6 +5,7 @@
  */
 package io.swagger.api;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,72 +15,69 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2020-11-21T13:18:37.550Z[GMT]")
 public interface UserApi {
 
-    @Operation(summary = "Create user", description = "This can only be done by admin from the bank.", tags={ "user" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "201", description = "User created"),
-        
-        @ApiResponse(responseCode = "400", description = "bad input")})
-    @RequestMapping(value = "/user",
-        consumes = { "application/json" }, 
-        method = RequestMethod.POST)
-    ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body);
+    @Operation(summary = "Create user", description = "This can only be done by admin from the bank.", tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User created"),
 
-    @Operation(summary = "Get logged in user", description = "get the currently logged in user", tags={ "user" })
+            @ApiResponse(responseCode = "400", description = "bad input")})
+    @RequestMapping(value = "/user",
+            consumes = {"application/json"},
+            method = RequestMethod.POST)
+    ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema = @Schema()) @Valid @RequestBody User body);
+
+    @Operation(summary = "Get logged in user", description = "get the currently logged in user", tags = {"user"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created")})
     @RequestMapping(value = "/user/loggedin",
-            produces = { "application/json" },
+            produces = {"application/json"},
             method = RequestMethod.GET)
     ResponseEntity<Void> getLoggedInUser();
 
-    @Operation(summary = "get a user with specific userId", description = "", tags={ "user" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "succesful operation", content = @Content(schema = @Schema(implementation = User.class))),
-        
-        @ApiResponse(responseCode = "400", description = "Invalid userId supplied"),
-        
-        @ApiResponse(responseCode = "404", description = "user not found") })
+    @Operation(summary = "get a user with specific userId", description = "", tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "succesful operation", content = @Content(schema = @Schema(implementation = User.class))),
+
+            @ApiResponse(responseCode = "400", description = "Invalid userId supplied"),
+
+            @ApiResponse(responseCode = "404", description = "user not found")})
     @RequestMapping(value = "/user/search/{userId}",
-        produces = { "application/json" }, 
-        method = RequestMethod.GET)
-    ResponseEntity<User> getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required=true, schema=@Schema()) @PathVariable("userId") Long userId);
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<User> getUserByUserId(@Parameter(in = ParameterIn.PATH, description = "userId of an user", required = true, schema = @Schema()) @PathVariable("userId") Long userId);
 
 
-    @Operation(summary = "Changes user to active/inactive", description = "This can only be done by the admin.", tags={ "user" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "successful operation"),
-        
-        @ApiResponse(responseCode = "400", description = "Invalid userID supplied"),
-        
-        @ApiResponse(responseCode = "404", description = "user not found") })
+    @Operation(summary = "Changes user to active/inactive", description = "This can only be done by the admin.", tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successful operation"),
+
+            @ApiResponse(responseCode = "400", description = "Invalid userID supplied"),
+
+            @ApiResponse(responseCode = "404", description = "user not found")})
     @RequestMapping(value = "/user/activity/{userId}",
-        method = RequestMethod.PUT)
-    ResponseEntity<Void> toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required=true, schema=@Schema()) @PathVariable("userId") Long userId);
+            method = RequestMethod.PUT)
+    ResponseEntity<Void> toggleUserStatus(@Parameter(in = ParameterIn.PATH, description = "The userID that needs to be set active or inactive", required = true, schema = @Schema()) @PathVariable("userId") Long userId);
 
 
-    @Operation(summary = "Update existing User", description = "Update de found user", tags={ "user" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "executed"),
-        
-        @ApiResponse(responseCode = "400", description = "Invalid userId supplied"),
-        
-        @ApiResponse(responseCode = "401", description = "failed to authenticate"),
-        
-        @ApiResponse(responseCode = "404", description = "User not found") })
+    @Operation(summary = "Update existing User", description = "Update de found user", tags = {"user"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "executed"),
+
+            @ApiResponse(responseCode = "400", description = "Invalid userId supplied"),
+
+            @ApiResponse(responseCode = "401", description = "failed to authenticate"),
+
+            @ApiResponse(responseCode = "404", description = "User not found")})
     @RequestMapping(value = "/user/{userId}",
-        consumes = { "application/json" }, 
-        method = RequestMethod.PUT)
-    ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required=true, schema=@Schema()) @PathVariable("userId") Long userId, @Parameter(in = ParameterIn.DEFAULT, description = "Updated user object", required=true, schema=@Schema()) @Valid @RequestBody User body);
+            consumes = {"application/json"},
+            method = RequestMethod.PUT)
+    ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.PATH, description = "id of user that needs to be updated", required = true, schema = @Schema()) @PathVariable("userId") Long userId, @ApiParam(value = "Updated user password", required = true) @Valid @RequestParam(value = "password", required = true) String password);
 
 }
 

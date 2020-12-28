@@ -42,31 +42,31 @@ public class AccountApiController implements AccountApi {
         this.accountService = accountService;
     }
 
-    public ResponseEntity createAcc(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody Account body, Errors errors) throws BadInputException, NotFoundException {
+    public ResponseEntity createAcc(@Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody Account body, Errors errors) throws BadInputException, NotFoundException {
         /*
          * If the enum in the body is not a valid type of account, an error is thrown before we can catch it, so
          * we're using the Errors class to check if any errors occur while parsing the json body
-        */
-        if (errors.hasErrors()){
+         */
+        if (errors.hasErrors()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Type of account is not valid");
         }
-        try{
+        try {
             accountService.createAccount(body);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body("Account succesfully created");
-        } catch (NotFoundException e){
+        } catch (NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
-        } catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Iban of account", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) throws NotFoundException {
+    public ResponseEntity getAccountByIban(@Parameter(in = ParameterIn.PATH, description = "Iban of account", required = true, schema = @Schema()) @PathVariable("accountId") String accountId) throws NotFoundException {
         try {
             return new ResponseEntity<Account>(accountService.getAccountByIban(accountId), HttpStatus.OK);
         } catch (ForbiddenException e) {
@@ -77,40 +77,40 @@ public class AccountApiController implements AccountApi {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
-        }catch(NotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
-        } catch(BadInputException e){
+        } catch (BadInputException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
-        } catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity getAccountByUserID(@Parameter(in = ParameterIn.PATH, description = "Id of user", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
+    public ResponseEntity getAccountByUserID(@Parameter(in = ParameterIn.PATH, description = "Id of user", required = true, schema = @Schema()) @PathVariable("userId") Long userId) {
         try {
             return new ResponseEntity<List<Account>>(accountService.getAccountsByUserId(userId), HttpStatus.OK);
-        } catch(NotAuthorizedException e) {
+        } catch (NotAuthorizedException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
-        }catch(NotFoundException e) {
+        } catch (NotFoundException e) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
-        } catch(BadInputException e) {
+        } catch (BadInputException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
-        } catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity toggleStatusAcc(@Parameter(in = ParameterIn.PATH, description = "AccountID to set to active or inactive", required=true, schema=@Schema()) @PathVariable("accountId") String accountId) {
+    public ResponseEntity toggleStatusAcc(@Parameter(in = ParameterIn.PATH, description = "AccountID to set to active or inactive", required = true, schema = @Schema()) @PathVariable("accountId") String accountId) {
         try {
             accountService.toggleActivityStatus(accountId);
             return ResponseEntity
@@ -128,8 +128,7 @@ public class AccountApiController implements AccountApi {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

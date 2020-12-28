@@ -2,21 +2,17 @@ package io.swagger.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.model.Account;
-import io.swagger.service.AccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,7 +26,7 @@ public class AccountApiControllerTest {
     private HttpHeaders headers = new HttpHeaders();
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         account = new Account("NL99INHO9999599999", Account.TypeofaccountEnum.DEPOSIT, 100005L);
         headers.setBasicAuth("test", "test");
     }
@@ -60,7 +56,8 @@ public class AccountApiControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test void toggleAccountActivityShouldReturnOk() throws Exception {
+    @Test
+    void toggleAccountActivityShouldReturnOk() throws Exception {
         this.mvc.perform(put("/account/activity/NL99INHO9999999999").headers(headers))
                 .andExpect(status().isOk());
     }

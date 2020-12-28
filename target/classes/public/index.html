@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset= "utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style/index.css">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style/index.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-  <form id ="loginForm" action="/perform_login" method="post">
+<form id="loginForm" action="/perform_login" method="post" class="container">
     <h1>Login</h1>
 
-    <label for="username"><b>Email</b></label>
+    <label for="username"><b>Username</b></label>
     <input type="text" placeholder="Enter username" name="username" id="username" required>
 
     <label for="password"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="password" id="password" required>
 
-    <input type="submit" id="loginSubmit" value="Login">
-  </form>
+    <input type="submit" id="loginSubmit" class="btn" value="Login">
+</form>
 
 </body>
 </html>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        sessionStorage.clear();
+    });
+
+</script>
