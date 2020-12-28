@@ -38,7 +38,7 @@ body
 .box
 {
   width: 35vw;
-  height: 43vw;
+  height: 32vw;
   margin-top: 2vw;
 }
 .vl
@@ -78,7 +78,7 @@ body
 .scrollTransaction
 {
     overflow: auto;
-    height: 32vw;
+    height: 28vw;
 }
 .transactions
 {
@@ -86,7 +86,7 @@ body
     border: 0.1vw solid black;
     padding: 1vw;
     width: 27vw;
-    height: 5vw;
+    height: 10vw;
     margin-bottom: 1vw;
 }
 

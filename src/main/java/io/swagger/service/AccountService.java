@@ -2,12 +2,9 @@ package io.swagger.service;
 
 import io.swagger.exception.*;
 import io.swagger.model.Account;
-import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,25 +17,15 @@ import static io.swagger.model.Account.TypeofaccountEnum.BANK;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
+    private final AuthorizationService authorizationService;
     private final int IBAN_FORMAT_CHARACTERS = 18;
     private final int USERID_FORMAT_CHARACTERS = 6;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository, UserService userService){
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository, AuthorizationService authorizationService){
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
-        this.userService = userService;
-    }
-
-    private void checkAccountAuthorization(Account account) throws NotAuthorizedException {
-        Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (((User) security).getuserId().equals(account.getUserid()) || ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
-            return;
-        }
-
-        throw new NotAuthorizedException(401, "not authorized");
+        this.authorizationService = authorizationService;
     }
 
     public Account getAccountByIban(String iban) throws NotFoundException, BadInputException, NotAuthorizedException, ForbiddenException {
@@ -52,7 +39,7 @@ public class AccountService {
             throw new ForbiddenException(403, "can't access this account");
         }
 
-        checkAccountAuthorization(account);
+        authorizationService.checkAccountAuthorization(account);
 
         if (account == null) {
             throw new NotFoundException(404, "No account found with this iban");
@@ -62,7 +49,7 @@ public class AccountService {
     }
 
     public List<Account> getAccountsByUserId(Long userId) throws BadInputException, NotFoundException, NotAuthorizedException {
-        userService.checkUserAuthorization(userId);
+        authorizationService.checkUserAuthorization(userId);
         if (userId.toString().length() != USERID_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of userid is incorrect");
         }

@@ -59,22 +59,18 @@
 
 <script type="text/javascript">
 	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-	if(loggedInUser == null){
-    	window.location = "index.html";
-  	} else if (loggedInUser.typeofuser == "customer"){
-    	window.location = "home.html";
-  	}
-	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+	if (loggedInUser.typeofuser !== "EMPLOYEE"){
+	    window.location = "home.html";
+	}
+	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
 
 	var foundAccount = JSON.parse(sessionStorage.getItem("foundUser"));
 	getAccounts(foundAccount);
-	getTransactions(foundAccount);
 
 	function getAccounts(account)
 	{
-		var userid = account.userid;
 			$.ajax({
-				url: 'account/listaccount?userId=' + account.userid,
+				url: 'account/listaccount/' + account.userid,
 				type:'GET',
 				async: false,
 				contentType: "application/json",
@@ -83,6 +79,7 @@
 					var msg = "";
 					$.each(response, function(index){
 						fillHeaders(response[index]);
+						getTransactions(response[index]);
 					});
 				},
 				error: function(error){
@@ -93,25 +90,27 @@
 	function fillHeaders(account){
 		if (account.typeofaccount == "deposit") {
 			$('#checkingAccHeader').text("Checking: " + account.iban);
+			$('#totalAmountChecking').text("Total Amount: " + account.balance);
 		}
 		else if(account.typeofaccount == "saving"){
 			$('#savingsAccHeader').text("Saving: " + account.iban);
+			$('#totalAmountSaving').text("Total Amount: " + account.balance);
 		}
 	}
 
-	function showTransactions(transactions)
+	function showTransactions(transactions, accountsIban)
 	{
 		var html = `<div class="transactions">
 									<p>Transaction date: ` + transactions.date + `</p>
-									<p>Recipient: ` + transactions.receiver.iban + `</p>
+									<p>Recipient: ` + transactions.receiver + `</p>
 									<p>Amount: €` + transactions.amount + `</p>
 									</div>`
-		if (transactions.sender.typeofaccount == "deposit")
+		if (accountsIban.typeofaccount == "deposit")
 		{
 			$('#checkingTransactions').append(html);
 		}
 
-		else if(transactions.sender.typeofaccount == "saving")
+		else if(accountsIban.typeofaccount  == "saving")
 		{
 			$('#savingsTransactions').append(html);
 		}
@@ -119,9 +118,8 @@
 
 	function getTransactions(account)
 	{
-		var iban = account.iban;
 			$.ajax({
-				url: 'transaction/account/{accountId}?acountId=' + account.iban,
+				url: 'transaction/account/' + account.iban,
 				type: 'GET',
 				async: false,
 				contentType: "application/json",
@@ -129,7 +127,7 @@
 				success:function(response){
 					var msg = "";
 					$.each(response, function(index){
-						showTransactions(response[index]);
+						showTransactions(response[index], account);
 					});
 				},
 				error: function(error){

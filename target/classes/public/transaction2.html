@@ -47,12 +47,10 @@
 </html>
 <script type="text/javascript">
     var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-    if(loggedInUser == null){
-        window.location = "index.html";
-    }
+
     $(document).ready(function(){
-        $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
-        var accounts = getAccountsByUser(loggedInUser.id)
+        $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
+        var accounts = getAccountsByUser(loggedInUser.userId)
         accounts.forEach( account => {
             var option = document.createElement("option")
             option.text = account.iban;
@@ -68,22 +66,19 @@
                 alert("Please choose a bank account where you want to send to");
                 location.reload();
             }
-            var sender = getAccountByIban($('#accounts').val().trim());
-            var receiver = getAccountByIban(document.getElementById("to").value);
-            var by = loggedInUser;
+            var sender = $('#accounts').val().trim();
+            var receiver = $('#to').val().trim();
             var transaction = {}
-            transaction["id"] = 0;
             transaction["sender"] = sender;
             transaction["receiver"] = receiver;
             transaction["amount"] = amount;
-            transaction["by"] = by;
-            transaction["date"] = null;
+            transaction["performinguser"] = loggedInUser.userId;
             transaction = JSON.stringify(transaction);
-            if(sender.isactive == false){
+            if(sender.isactive === false){
                 alert("Sender account is not active");
                 location.reload();
             }
-            else if(receiver.isactive == false){
+            else if(receiver.isactive === false){
                 alert("Receiver account is not active");
                 location.reload();
             }
@@ -91,12 +86,9 @@
                 url:'transaction',
                 type:'POST',
                 contentType: "application/json",
-                dataType: "json",
-                headers: {
-                    "Accept": "application/json",
-                },
                 data:transaction,
                 success:function(response){
+                    alert("Transactions has been made");
                     window.location = "home.html";
                 },
                 error: function(error){
@@ -110,7 +102,7 @@
     function getAccountsByUser(id) {
         var accounts = new ArrayBuffer();
         $.ajax({
-            url:'account/listaccount',
+            url: 'account/listaccount/' + id,
             type:'GET',
             contentType: "application/json",
             dataType: "json",
@@ -118,7 +110,6 @@
                 "Accept": "application/json",
             },
             async: false,
-            data:{userId:id},
             success:function(response){
                 accounts = response;
             },
@@ -129,8 +120,7 @@
         return accounts;
     };
 
-    function getAccountByIban(id){
-        var iban = id.replace("/ /g", "%20");
+    function getAccountByIban(iban){
         var account;
         $.ajax({
             url:'account/' + iban,
@@ -141,13 +131,12 @@
                 "Accept": "application/json",
             },
             async: false,
-            data:{iban:iban},
             success:function(response){
                 account = response;
             },
             error: function(error){
                 alert("Account doesn't exist");
-                window.location("transaction2.html");
+                location.reload();
             }
         });
         return account;
@@ -156,7 +145,7 @@
     function checkForSaving(){
         var sender = getAccountByIban($('#accounts').val().trim());
         if (sender.typeofaccount == "saving"){
-            var accounts = getAccountsByUser(loggedInUser.id);
+            var accounts = getAccountsByUser(loggedInUser.userId);
             accounts.forEach( account => {
                 if (account.typeofaccount == "deposit") {
                     document.getElementById("to").value = account.iban;

@@ -38,9 +38,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable() //TODO: dit wordt later verandert
                 .authorizeRequests()
+                .antMatchers("/style/**").permitAll() //Adding this line solved it
                 .antMatchers(HttpMethod.GET, "/user/search/**").hasAuthority(USER_READ.getPermission())
                 .antMatchers(HttpMethod.POST, "/user").hasAuthority(USER_WRITE.getPermission())
-                .antMatchers(HttpMethod.PUT, "/user/**").hasAuthority(USER_WRITE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/user/**").hasAuthority(USER_UPDATE.getPermission())
+                .antMatchers(HttpMethod.PUT, "/user/activity/**").hasAuthority(USER_WRITE.getPermission())
                 .antMatchers(HttpMethod.GET, "/account/**").hasAuthority(ACCOUNT_READ.getPermission())
                 .antMatchers(HttpMethod.POST, "/account").hasAuthority(ACCOUNT_WRITE.getPermission())
                 .antMatchers(HttpMethod.PUT, "/account/activity/**").hasAuthority(ACCOUNT_WRITE.getPermission())

@@ -3,11 +3,7 @@ package io.swagger.service;
 import io.swagger.exception.*;
 import io.swagger.model.Account;
 import io.swagger.model.Transaction;
-import io.swagger.model.User;
-import io.swagger.repository.AccountRepository;
 import io.swagger.repository.TransactionRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.threeten.bp.LocalDateTime;
 
@@ -21,25 +17,13 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
     private final UserService userService;
-    private final AccountRepository accountRepository;
+    private final AuthorizationService authorizationService;
 
-    public TransactionService(TransactionRepository transactionRepository, AccountService accountService, UserService userService, AccountRepository accountRepository) {
+    public TransactionService(TransactionRepository transactionRepository, AccountService accountService, UserService userService, AuthorizationService authorizationService) {
         this.transactionRepository = transactionRepository;
         this.accountService = accountService;
         this.userService = userService;
-        this.accountRepository = accountRepository;
-    }
-
-    public void checkTransactionAuthorization(Transaction transaction) throws NotAuthorizedException {
-        Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (((User) security).getuserId().equals(transaction.getPerforminguser()) ||
-                ((User) security).getuserId().equals(transaction.getReceivinguser()) ||
-                ((User) security).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))){
-            return;
-        }
-
-        throw new NotAuthorizedException(401, "not authorized");
+        this.authorizationService = authorizationService;
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -79,7 +63,7 @@ public class TransactionService {
 
     public Transaction getTransactionById(Long id) throws NotFoundException, NotAuthorizedException {
         Transaction transaction = transactionRepository.findTransactionById(id);
-        checkTransactionAuthorization(transaction);
+        authorizationService.checkTransactionAuthorization(transaction);
         if ( transaction == null) {
             throw new NotFoundException(404, "No transaction found with this id");
         }

@@ -6,6 +6,8 @@ body
 	background-size: cover;
 	max-width: 100%;
 	height:auto;
+    padding-bottom: 30vw;
+  overflow: hidden;
 }
 .container
 {
@@ -15,10 +17,11 @@ body
   max-width: 300px;
   padding: 16px;
   background-color: white;
+  overflow: hidden;
 }
 input[type=text], input[type=password]
 {
-  width: 100%;
+  width: 90%;
   padding: 15px;
   margin: 5px 0 22px 0;
   border: none;

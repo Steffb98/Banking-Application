@@ -19,7 +19,7 @@
     <p id="name" for="name"></p>
     <hr>
 
-    <div id="searchBar">
+    <div id="searchBalk">
         <input type="text" class="search" id="accountIban" placeholder="Search with Iban">
         <input type="submit" class="submit" id="search" value="Search">
     </div>
@@ -36,21 +36,18 @@
 
 <script type="text/javascript">
 	var loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
-	if(loggedInUser == null){
-    	window.location = "index.html";
-  	} else if (loggedInUser.typeofuser == "customer"){
-    	window.location = "home.html";
-  	}
-	$('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname);
+    if (loggedInUser.typeofuser !== "EMPLOYEE"){
+        window.location = "home.html";
+    }
+    $('#name').text(loggedInUser.firstname + " " + loggedInUser.lastname + " | " + loggedInUser.userId);
 
 	$(document).ready(function() {
 		$("#search").click(function(){
 
 			var iban = $('#accountIban').val().trim();
 				$.ajax({
-					url: 'account/{' + iban + '}',
+					url: 'account/' +  iban,
 					type:'get',
-					data:{iban:iban},
 					contentType:"application/json",
 					dataType:"json",
 					success:function(response){
@@ -90,7 +87,7 @@
 										<p>Balance: €` + account.balance +`</p>
 										<button id="` + account.userid + `" class="btn">Check transactions</button>
 								</div>`
-		$("#info").append(html);
+		$("#info").html(html);
 		}
 
 
@@ -108,7 +105,7 @@
 		var names = "";
 		var userid = account.userid;
 			$.ajax({
-				url:'users/' + account.userid,
+				url:'user/search/' + account.userid,
 				type:'get',
 				async: false,
 				contentType: "application/json",

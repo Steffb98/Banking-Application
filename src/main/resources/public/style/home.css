@@ -152,7 +152,7 @@ body
   padding: 1vw 2vw;
   margin-left: 32vw;
   margin-right: auto;
-  margin-top: -3vw;
+  margin-top: -20vw;
 }
 #line
 {
@@ -169,7 +169,7 @@ body
 	border: 0.1vw solid black;
 	padding: 1vw;
 	width: 27vw;
-	height: 5vw;
+	height: 9vw;
 	margin-bottom: 1vw;
 }
 #totalAmount

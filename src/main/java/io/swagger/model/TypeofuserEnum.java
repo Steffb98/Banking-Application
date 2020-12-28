@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 import static io.swagger.configuration.ApplicationUserPermission.*;
 
 public enum TypeofuserEnum {
-    CUSTOMER(Sets.newHashSet(USER_READ, ACCOUNT_READ, TRANSACTION_READ, TRANSACTION_WRITE)),
+    CUSTOMER(Sets.newHashSet(USER_READ, USER_UPDATE, ACCOUNT_READ, TRANSACTION_READ, TRANSACTION_WRITE)),
 
-    EMPLOYEE(Sets.newHashSet(USER_READ, USER_WRITE, ACCOUNT_READ, ACCOUNT_WRITE, TRANSACTION_READ, TRANSACTION_WRITE));
+    EMPLOYEE(Sets.newHashSet(USER_READ, USER_WRITE, USER_UPDATE, ACCOUNT_READ, ACCOUNT_WRITE, TRANSACTION_READ, TRANSACTION_WRITE));
 
     private final Set<ApplicationUserPermission> permissions;
 

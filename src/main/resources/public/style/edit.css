@@ -50,13 +50,9 @@ body
   border-left: 0.1vw solid black;
   height: 35vw;
 }
-#email_div
-{
-  float:right;
-}
 #password_div
 {
-  float: left;
+  margin-left: 25vw;
 }
 .block
 {
@@ -64,7 +60,7 @@ body
   border: 0.1vw solid black;
   padding: 2vw;
   width: 31vw;
-  height: 10vw;
+  height: 32vw;
 }
 #transaction
 {
@@ -91,7 +87,7 @@ body
 }
 input[type=text], input[type=password]
 {
-  width: 100%;
+  width: 92%;
   padding: 15px;
   margin: 5px 0 22px 0;
   border: none;
@@ -114,9 +110,9 @@ input[type=text], input[type=password]
   padding: 1vw 2vw;
   margin-left: 32vw;
   margin-right: auto;
-  margin-top: -4vw;
+  margin-top: -20vw;
 }
 #Edit
 {
-  height:30vw;
+  height:40vw;
 }
