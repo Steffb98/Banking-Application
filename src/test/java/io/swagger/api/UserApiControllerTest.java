@@ -58,10 +58,9 @@ public class UserApiControllerTest {
 
         this.mvc
                 .perform(
-                        put("/user/100001")
+                        put("/user/100005?password=update")
                                 .headers(headers)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(mapper.writeValueAsString(user)))
+                                .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
     }
 
