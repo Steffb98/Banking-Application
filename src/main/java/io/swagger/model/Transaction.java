@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -92,6 +93,9 @@ public class Transaction   {
   }
 
   public void setSender(String sender) {
+    if (sender.isEmpty()){
+      throw new IllegalArgumentException("Sender cannot be empty");
+    }
     this.sender = sender;
   }
 
@@ -112,6 +116,9 @@ public class Transaction   {
   }
 
   public void setReceiver(String receiver) {
+    if (receiver.isEmpty()){
+      throw new IllegalArgumentException("Receiver cannot be empty");
+    }
     this.receiver = receiver;
   }
 
@@ -133,6 +140,9 @@ public class Transaction   {
   }
 
   public void setAmount(BigDecimal amount) {
+    if (amount.compareTo(new BigDecimal(0)) == -1){
+      throw new IllegalArgumentException("Amount cannot be below zero");
+    }
     this.amount = amount;
   }
 
@@ -153,6 +163,9 @@ public class Transaction   {
   }
 
   public void setPerforminguser(Long performinguser) {
+    if (performinguser == null){
+      throw new IllegalArgumentException("Performing user cannot be empty");
+    }
     this.performinguser = performinguser;
   }
 
@@ -161,6 +174,9 @@ public class Transaction   {
   }
 
   public void setReceivinguser(Long receivinguser) {
+    if (receivinguser == null){
+      throw new IllegalArgumentException("Receiving user cannot be empty");
+    }
     this.receivinguser = receivinguser;
   }
 
@@ -181,6 +197,9 @@ public class Transaction   {
   }
 
   public void setDate(LocalDateTime date) {
+    if (date == null){
+      throw new IllegalArgumentException("Date cannot be empty");
+    }
     this.date = date;
   }
 

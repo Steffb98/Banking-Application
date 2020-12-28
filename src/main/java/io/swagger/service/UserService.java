@@ -2,12 +2,16 @@ package io.swagger.service;
 
 import io.swagger.exception.AlreadyExistsException;
 import io.swagger.exception.NotAuthorizedException;
+import io.swagger.exception.BadInputException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.TypeofuserEnum;
 import io.swagger.model.User;
 import io.swagger.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +32,11 @@ public class UserService {
         throw new NotAuthorizedException(401, "not authorized");
     }
 
+    public User getLoggedInUser(){
+        Object security = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (User) security;
+    }
+
     public User getUserById(Long userId) throws NotFoundException, NotAuthorizedException {
         checkUserAuthorization(userId);
         User user = userRepository.findUserByUserId(userId);
@@ -37,12 +46,14 @@ public class UserService {
         return user;
     }
 
-    public void createUser(User user) throws AlreadyExistsException {
-        if(userRepository.findByUsername(user.getUsername()) == null){
-            userRepository.save(new User(user.getFirstname(), user.getLastname(), user.getUsername(), user.getPassword(), TypeofuserEnum.CUSTOMER));
-        }else{
+    public void createUser(User user) throws AlreadyExistsException, BadInputException {
+        if(userRepository.findByUsername(user.getUsername()) != null){
             throw new AlreadyExistsException(409, "Email already exists");
         }
+        else if(!EmailValidator.getInstance().isValid(user.getUsername())){
+            throw new BadInputException(400, "Email format is incorrect");
+        }
+        userRepository.save(new User(user.getFirstname(), user.getLastname(), user.getUsername(), user.getPassword(), TypeofuserEnum.CUSTOMER));
     }
 
     public void toggleUserStatus(Long userId) throws NotFoundException {
@@ -54,12 +65,18 @@ public class UserService {
         }else{
             throw new NotFoundException(404, "User not found");
         }
+        //setting isActive to the opposite of the current value
+        user.setEnabled(!user.isEnabled());
+        userRepository.save(user);
     }
 
-    public void updateUser(Long userId, User body) throws NotFoundException {
+    public void updateUser(Long userId, User body) throws NotFoundException, BadInputException {
         User user = userRepository.findUserByUserId(userId);
         if(user == null) {
             throw new NotFoundException(404, "User not found");
+        }
+        else if(!EmailValidator.getInstance().isValid(body.getUsername())){
+            throw new BadInputException(400, "Email format is incorrect");
         }
         if (!body.getFirstname().isEmpty()) {
             user.setFirstname(body.getFirstname());

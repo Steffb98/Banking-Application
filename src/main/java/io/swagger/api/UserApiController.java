@@ -3,6 +3,7 @@ package io.swagger.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.exception.AlreadyExistsException;
 import io.swagger.exception.NotAuthorizedException;
+import io.swagger.exception.BadInputException;
 import io.swagger.exception.NotFoundException;
 import io.swagger.model.User;
 import io.swagger.service.UserService;
@@ -39,6 +40,14 @@ public class UserApiController implements UserApi {
         this.userService = userService;
     }
 
+    public ResponseEntity getLoggedInUser(){
+        try {
+            return new ResponseEntity<User>(userService.getLoggedInUser(),HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public ResponseEntity createUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody User body) {
         try {
             userService.createUser(body);
@@ -47,7 +56,11 @@ public class UserApiController implements UserApi {
                     .body("User has been created");
         }catch(AlreadyExistsException e){
             return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
+                    .status(HttpStatus.FOUND)
+                    .body(e.getMessage());
+        }catch(BadInputException e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -94,6 +107,10 @@ public class UserApiController implements UserApi {
         }catch(NotFoundException e){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }catch(BadInputException e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

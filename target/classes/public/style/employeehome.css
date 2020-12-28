@@ -1,0 +1,165 @@
+body
+{
+	background: url(background.jpg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	max-width: 100%;
+	height:auto;
+}
+.container
+{
+  margin-top: 5%;
+  margin-bottom: 5%;
+  margin-right:auto;
+  margin-left:auto;
+  max-width: 80vw;
+  height: 55vw;
+  padding: 2vw;
+  background-color: white;
+  overflow: hidden;
+}
+.logo
+{
+  width: 8vw;
+}
+.logout
+{
+  width: 2vw;
+  float:right;
+  margin-top: 5vw;
+}
+#name
+{
+  margin-top: 5.5vw;
+  margin-right: 1vw;
+  float: right;
+}
+.box
+{
+  width: 35vw;
+  height: 43vw;
+  margin-top: 2vw;
+}
+.vl
+{
+  float: left;
+  margin-left: 5vw;
+  margin-top: 2vw;
+  border-left: 0.1vw solid black;
+  height: 43vw;
+}
+#accounts
+{
+  float:right;
+}
+#info
+{
+  float: left;
+}
+#infoBlock
+{
+	height: 35vw;
+}
+.block
+{
+  border-radius: 25px;
+  border: 0.1vw solid black;
+  padding: 2vw;
+  width: 31vw;
+  height: 10vw;
+}
+#secondblock
+{
+  margin-top: 7vw;
+}
+.png
+{
+  margin-top: 1vw;
+  width: 9vw;
+}
+#text
+{
+  margin-top: 6vw;
+  margin-right: 3vw;
+  float: right;
+}
+#infoText
+{
+	text-align: center;
+}
+#text1
+{
+  margin-top: -0.5vw;
+}
+#money
+{
+  float: right;
+}
+#value
+{
+	float: right;
+	margin-top: -1vw;
+}
+.toggle
+{
+	background-color: #4CAF50;
+  color: white;
+  padding: 0.5vw 0.5vw;
+  border: none;
+  cursor: pointer;
+  width: 30%;
+  opacity: 0.9;
+}
+#userToggle
+{
+	margin-left: 10.5vw;
+	margin-right: auto;
+}
+#accountToggle
+{
+	margin-left: 17vw;
+	margin-top: -3vw;
+	width: 45%;
+}
+.btn
+{
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+}
+#cancel
+{
+  background-color: red;
+  width:20%;
+  padding: 1vw 2vw;
+  margin-left: 32vw;
+  margin-right: auto;
+  margin-top: -3vw;
+}
+#line
+{
+  height: 37vw;
+}
+.scrollTransaction
+{
+	overflow: auto;
+	height: 25vw;
+}
+.transactions
+{
+	border-radius: 25px;
+	border: 0.1vw solid black;
+	padding: 1vw;
+	width: 27vw;
+	height: 5vw;
+	margin-bottom: 1vw;
+}
+#totalAmount
+{
+	text-align: center;
+}
