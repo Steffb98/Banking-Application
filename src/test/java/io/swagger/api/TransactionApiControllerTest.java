@@ -12,11 +12,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.threeten.bp.LocalDateTime;
 
 import java.math.BigDecimal;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -34,7 +36,7 @@ public class TransactionApiControllerTest {
 
     @BeforeEach
     public void setUp(){
-        transaction = new Transaction("NL99INHO9999999999", "NL09INHO0999999999", new BigDecimal(10), 100001L, 100001L);
+        transaction = new Transaction("NL99INHO9999999999", "NL09INHO0999999999", new BigDecimal(10), 100005L, 100005L);
         headers.setBasicAuth("test", "test");
     }
 

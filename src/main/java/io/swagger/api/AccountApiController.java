@@ -55,7 +55,7 @@ public class AccountApiController implements AccountApi {
         try{
             accountService.createAccount(body);
             return ResponseEntity
-                    .status(HttpStatus.OK)
+                    .status(HttpStatus.CREATED)
                     .body("Account succesfully created");
         } catch (NotFoundException e){
             return ResponseEntity

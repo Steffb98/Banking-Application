@@ -30,7 +30,6 @@ public class Account   {
     this.iban = iban;
     this.balance = BigDecimal.valueOf(0.00);
     this.typeofaccount = typeofaccount;
-    this.absolutlimit = BigDecimal.valueOf(-10.00);
     this.isactive = true;
     this.userid = userid;
     this.daylimit = 5l;
@@ -81,7 +80,7 @@ public class Account   {
   private TypeofaccountEnum typeofaccount = null;
 
   @JsonProperty("absolutlimit")
-  private BigDecimal absolutlimit = null;
+  private BigDecimal absolutlimit = new BigDecimal(-10);
 
   @JsonProperty("isactive")
   private Boolean isactive = null;

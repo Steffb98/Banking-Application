@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -47,6 +48,7 @@ public class UserApiControllerTest {
                                 .headers(headers)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(mapper.writeValueAsString(user)))
+                .andDo(print())
                 .andExpect(status().isCreated());
     }
 

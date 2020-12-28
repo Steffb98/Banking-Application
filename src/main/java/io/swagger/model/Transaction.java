@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,7 @@ public class Transaction   {
   @JsonProperty("receivinguser")
   private Long receivinguser = null;
 
+  @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
   @JsonProperty("date")
   private LocalDateTime date = null;
 
