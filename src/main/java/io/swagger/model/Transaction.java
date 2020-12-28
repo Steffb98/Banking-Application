@@ -45,7 +45,6 @@ public class Transaction   {
   @JsonProperty("receivinguser")
   private Long receivinguser = null;
 
-  @JsonFormat(pattern = "dd/MM/yyyy hh:mm:ss")
   @JsonProperty("date")
   private LocalDateTime date = null;
 

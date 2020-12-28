@@ -42,7 +42,7 @@ public class TransactionApiControllerTest {
 
     @Test
     public void creatingTransactionShouldReturnCreated() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper(); // Junit werkt niet samen LocalDateTime daarom krijgen we een error
 
         this.mvc
                 .perform(
