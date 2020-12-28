@@ -51,6 +51,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
+                .httpBasic()
+                .and()
                 .formLogin()
                 .loginPage("/index.html")
                 .loginProcessingUrl("/perform_login")

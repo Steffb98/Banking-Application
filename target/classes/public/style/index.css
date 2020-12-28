@@ -17,6 +17,7 @@ body
   max-width: 300px;
   padding: 16px;
   background-color: white;
+  overflow: hidden;
 }
 input[type=text], input[type=password]
 {

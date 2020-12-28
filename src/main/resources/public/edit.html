@@ -64,18 +64,12 @@
       location.reload();
     }
     else{
-      var user = {}
-      user["firstname"] = loggedInUser.firstname;
-      user["lastname"] = loggedInUser.lastname;
-      user["username"] = loggedInUser.username;
-      user["password"] = $('#pw').val();
-      user = JSON.stringify(user);
+      let password = $('#pw').val().trim();
 
       $.ajax({
-        url: 'user/' + loggedInUser.userId,
+        url: 'user/' + loggedInUser.userId+"?password="+password,
         type: 'PUT',
         contentType: "application/json",
-        data: user,
         success: function (response) {
           alert("Password has been successfully updated");
           location.reload();

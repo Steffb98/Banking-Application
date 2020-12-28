@@ -205,7 +205,4 @@ public class User implements UserDetails {
     return o.toString().replace("\n", "\n    ");
   }
 
-  public void setEncryptedPassword(String password){
-    this.password = password;
-  }
 }

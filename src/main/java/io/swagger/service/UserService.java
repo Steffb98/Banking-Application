@@ -67,15 +67,15 @@ public class UserService {
         }
     }
 
-    public void updateUser(Long userId, User body) throws NotFoundException, NotAuthorizedException {
+    public void updateUser(Long userId, String password) throws NotFoundException, NotAuthorizedException {
         User user = userRepository.findUserByUserId(userId);
         authorizationService.checkUserAuthorization(userId);
 
         if(user == null) {
             throw new NotFoundException(404, "User not found");
         }
-        if (!body.getPassword().isEmpty()) {
-            user.setEncryptedPassword(body.getPassword());
+        if (!password.isEmpty()) {
+            user.setPassword(password);
         }
         userRepository.save(user);
     }
