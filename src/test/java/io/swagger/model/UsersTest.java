@@ -34,10 +34,10 @@ public class UsersTest {
     }
 
     @Test
-    public void settingEmptyEmailShouldThrowException(){
+    public void settingEmptyUsernameShouldThrowException(){
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> user.setUsername(""));
-        assertEquals("Email cannot be empty", exception.getMessage());
+        assertEquals("UserName cannot be empty", exception.getMessage());
     }
 
     @Test

@@ -21,19 +21,19 @@ public class AccountTest {
     public void createUsersShouldNotBeNull(){assertNotNull(account);}
 
     @Test
-    public void settingBalanceBelowMinimumBalanceShouldThrowException(){
+    public void settingBalanceBelowAbsolutLimitShouldThrowException(){
         account.setAbsolutlimit(new BigDecimal(-10.00));
         account.setBalance(new BigDecimal(10));
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> account.setBalance(new BigDecimal(-100)));
-        assertEquals("Balance cannot be below the minimum balance", exception.getMessage());
+        assertEquals("Balance cannot be below the absolut limit", exception.getMessage());
     }
 
     @Test
-    public void settingMinimumBalanceAboveZeroShouldThrowException(){
+    public void settingAbsolutLimitAboveZeroShouldThrowException(){
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> account.setAbsolutlimit(new BigDecimal(1)));
-        assertEquals("Minimum balance cannot be above zero", exception.getMessage());
+        assertEquals("Absolut limit cannot be above zero", exception.getMessage());
     }
 
     @Test

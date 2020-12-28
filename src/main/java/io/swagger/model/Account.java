@@ -30,7 +30,6 @@ public class Account   {
     this.iban = iban;
     this.balance = BigDecimal.valueOf(0.00);
     this.typeofaccount = typeofaccount;
-    this.absolutlimit = BigDecimal.valueOf(-10.00);
     this.isactive = true;
     this.userid = userid;
     this.daylimit = 5l;
@@ -81,7 +80,7 @@ public class Account   {
   private TypeofaccountEnum typeofaccount = null;
 
   @JsonProperty("absolutlimit")
-  private BigDecimal absolutlimit = null;
+  private BigDecimal absolutlimit = new BigDecimal(-10);
 
   @JsonProperty("isactive")
   private Boolean isactive = null;
@@ -136,6 +135,9 @@ public class Account   {
   }
 
   public void setBalance(BigDecimal balance) {
+    if (balance.compareTo(absolutlimit) == -1){
+      throw new IllegalArgumentException("Balance cannot be below the absolut limit");
+    }
     this.balance = balance;
   }
 
@@ -176,6 +178,9 @@ public class Account   {
   }
 
   public void setAbsolutlimit(BigDecimal absolutlimit) {
+    if (absolutlimit.compareTo(new BigDecimal(0)) == 1){
+      throw new IllegalArgumentException("Absolut limit cannot be above zero");
+    }
     this.absolutlimit = absolutlimit;
   }
 
@@ -234,6 +239,9 @@ public class Account   {
   }
 
   public void setDaylimit(Long daylimit) {
+    if (daylimit < 0){
+      throw new IllegalArgumentException("DayLimit cannot be below zero");
+    }
     this.daylimit = daylimit;
   }
 
@@ -254,6 +262,9 @@ public class Account   {
   }
 
   public void setTransactionlimit(BigDecimal transactionlimit) {
+    if (transactionlimit.compareTo(new BigDecimal(0)) == -1){
+      throw new IllegalArgumentException("TransactionLimit cannot be below zero");
+    }
     this.transactionlimit = transactionlimit;
   }
 
@@ -273,6 +284,9 @@ public class Account   {
   }
 
   public void setNumberoftransactions(Long numberoftransactions) {
+    if (numberoftransactions < 0){
+      throw new IllegalArgumentException("NumberOfTransaction cannot be below zero");
+    }
     this.numberoftransactions = numberoftransactions;
   }
 

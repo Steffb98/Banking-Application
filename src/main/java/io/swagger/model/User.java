@@ -89,6 +89,9 @@ public class User implements UserDetails {
   }
 
   public void setFirstname(String firstname) {
+    if (firstname.isEmpty()){
+      throw new IllegalArgumentException("FirstName cannot be empty");
+    }
     this.firstname = firstname;
   }
 
@@ -104,10 +107,16 @@ public class User implements UserDetails {
   }
 
   public void setLastname(String lastname) {
+    if (lastname.isEmpty()){
+      throw new IllegalArgumentException("LastName cannot be empty");
+    }
     this.lastname = lastname;
   }
 
   public void setUsername(String username) {
+    if (username.isEmpty()){
+      throw new IllegalArgumentException("UserName cannot be empty");
+    }
     this.username = username;
   }
 
@@ -153,12 +162,13 @@ public class User implements UserDetails {
   }
 
   public void setPassword(String password) {
-    this.password = new BCryptPasswordEncoder().encode(password);
+    if (password.isEmpty()){
+      throw new IllegalArgumentException("Password cannot be empty");
+    }
+    this.password = password;
   }
 
-  public void setEnabled(Boolean enabled) {
-    this.enabled = enabled;
-  }
+  public void setEnabled(Boolean enabled) {this.enabled = enabled;}
   
   public TypeofuserEnum getTypeofuser() {
     return typeofuser;
