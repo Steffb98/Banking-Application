@@ -29,8 +29,10 @@ public class TransactionService {
     @Transactional(rollbackOn = Exception.class)
     public void addTransaction(Transaction transaction) throws BadInputException, NotFoundException, LimitReachedException, NotAuthorizedException, ForbiddenException {
 
+        // checks account with authorization
         Account sender = accountService.getAccountByIban(transaction.getSender());
-        Account receiver = accountService.getAccountByIban(transaction.getReceiver());
+        // checks account without authorization
+        Account receiver = accountService.accountChecks(transaction.getReceiver());
 
         //this field is used for authorization and for getting all transactions for the receiving user
         transaction.setReceivinguser(receiver.getUserid());

@@ -36,7 +36,7 @@ public class AccountService {
         return account;
     }
 
-    private Account accountChecks(String iban) throws BadInputException, NotFoundException, ForbiddenException {
+    public Account accountChecks(String iban) throws BadInputException, NotFoundException, ForbiddenException {
         if (iban.length() != IBAN_FORMAT_CHARACTERS) {
             throw new BadInputException(400, "Format of iban is incorrect");
         }
